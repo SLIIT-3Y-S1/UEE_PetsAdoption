@@ -22,7 +22,7 @@ class AppTheme {
         borderSide: BorderSide(color: Colors.black),
       ),
       focusedBorder: UnderlineInputBorder(
-        // borderSide: BorderSide(color: AppColors.accentYellow, width: 2.0),
+        borderSide: BorderSide(color: AppColors.accentYellow, width: 2.0),
       ),
     ), // textfields decorations
     colorScheme: ColorScheme.fromSwatch()

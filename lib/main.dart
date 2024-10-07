@@ -4,6 +4,9 @@ import 'package:device_preview/device_preview.dart';
 import 'package:pawpal/FirebaseTestPage%20.dart';
 import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
 import 'firebase_options.dart';
+import 'package:pawpal/features/splash/screens/splash_screen.dart';
+//import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
+import 'package:pawpal/theme/theme.dart';
 
 void main() async {
    WidgetsFlutterBinding.ensureInitialized();
@@ -26,10 +29,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'PawPal',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home:  FirebaseTestPage());
+        // theme: ThemeData(
+        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //   useMaterial3: true,
+        // ),
+        // home:  FirebaseTestPage());
+
+        theme: AppTheme.lightTheme,
+        home: SplashScreen());
   }
 }
