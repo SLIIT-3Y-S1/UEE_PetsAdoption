@@ -23,6 +23,6 @@ class MyApp extends StatelessWidget {
         title: 'PawPal',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: SplashScreen());
+        home: const SplashScreen());
   }
 }

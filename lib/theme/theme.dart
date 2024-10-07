@@ -13,17 +13,20 @@ class AppTheme {
       labelMedium: TextStyles.labelMedium.copyWith(color: AppColors.textSecondary),
       labelSmall: TextStyles.labelSmall.copyWith(color: AppColors.textSecondary),
     ),
-    inputDecorationTheme: const InputDecorationTheme(
+    inputDecorationTheme: InputDecorationTheme(
       filled: false,
-      border: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.black),
+      border: const UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.black),
       ),
-      enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.black),
+      enabledBorder: const UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.black),
       ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: AppColors.accentYellow, width: 2.0),
+      focusedBorder: const UnderlineInputBorder(
+      borderSide: BorderSide(color: AppColors.accentYellow, width: 2),
       ),
+      labelStyle: TextStyles.headlineMedium.copyWith(color: AppColors.textPrimary),
+      hintStyle: TextStyles.labelSmall.copyWith(color: AppColors.textSecondary),
+      helperStyle: TextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
     ), // textfields decorations
     colorScheme: ColorScheme.fromSwatch()
         .copyWith(surface: AppColors.background)

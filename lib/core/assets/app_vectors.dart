@@ -4,5 +4,7 @@ class AppVectors {
   
   static const String splashScreenBranding = '${basePath}SplashScreenBranding$format';
   static const String splashScreenLogo = '${basePath}SplashScreenLogo$format';
+  static const String loginScreenLogo = '${basePath}LoginScreenLogo$format';
+  static const String appBarBranding = '${basePath}AppBarBranding$format';  
 
 }
