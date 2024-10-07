@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "791892164692",
+    "project_id": "pawpal-4d1b7",
+    "storage_bucket": "pawpal-4d1b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791892164692:android:d7d9a6297651ce03b8adc1",
+        "android_client_info": {
+          "package_name": "com.example.pawpal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIFY4JIfNCWq0_bir7DLt4J-ZanIPoWJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791892164692:android:4e666c01a15bf9c4b8adc1",
+        "android_client_info": {
+          "package_name": "com.uee.pawpal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIFY4JIfNCWq0_bir7DLt4J-ZanIPoWJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
