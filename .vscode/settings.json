@@ -1,3 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "cmake.sourceDirectory": "C:/Users/Mash/OneDrive/Desktop/UEE Project/pawpal/windows/flutter",
+  "java.compile.nullAnalysis.mode": "automatic"
 }

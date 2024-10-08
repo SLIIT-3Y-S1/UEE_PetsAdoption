@@ -1,15 +1,20 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:pawpal/FirebaseTestPage%20.dart';
-import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
+import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
+import 'package:pawpal/features/vets/screens/edit_vet_profile_screen.dart';
+import 'package:pawpal/features/vets/screens/feedback_screen.dart';
+import 'package:pawpal/features/vets/screens/manage_appointment.dart';
+import 'package:pawpal/features/vets/screens/msg_list_screeen.dart';
+import 'package:pawpal/features/vets/screens/msg_one_screen.dart';
+import 'package:pawpal/features/vets/screens/vet_profile_screen.dart';
+import 'package:pawpal/features/vets/screens/vets_appointment.dart';
+import 'package:pawpal/features/vets/screens/vets_home_scn.dart';
 import 'firebase_options.dart';
-import 'package:pawpal/features/splash/screens/splash_screen.dart';
-//import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
 import 'package:pawpal/theme/theme.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -36,6 +41,6 @@ class MyApp extends StatelessWidget {
         // home:  FirebaseTestPage());
 
         theme: AppTheme.lightTheme,
-        home: SplashScreen());
+        home: VetsLoginScreen());
   }
 }
