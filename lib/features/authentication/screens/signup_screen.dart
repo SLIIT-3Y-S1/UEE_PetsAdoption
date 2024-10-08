@@ -42,7 +42,7 @@ class SignupScreen extends StatelessWidget {
                   const SizedBox(height: 30.0),
                   MediumButton(
                     color: AppColors.accentYellow,
-                    text: 'Create account',
+                    text: 'Sign Up',
                     onPressed: () {
                       // Handle login logic here
                     },
@@ -63,7 +63,7 @@ class SignupScreen extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      'Login',
+                      'Log In',
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
                                 color: AppColors.accentRed,
