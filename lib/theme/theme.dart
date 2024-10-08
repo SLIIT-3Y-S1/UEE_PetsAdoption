@@ -39,6 +39,7 @@ class AppTheme {
     // textfields decorations
     colorScheme: ColorScheme.fromSwatch()
         .copyWith(surface: AppColors.background)
-        .copyWith(onError: AppColors.error),
+        .copyWith(onError: AppColors.error)
+        .copyWith(shadow: AppColors.iconGrey)
   );
 }

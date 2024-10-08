@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:pawpal/features/postings/screens/postings_screen.dart';
 import 'package:pawpal/features/splash/screens/splash_screen.dart';
-//import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
 import 'package:pawpal/theme/theme.dart';
 
 void main() {
@@ -23,6 +23,6 @@ class MyApp extends StatelessWidget {
         title: 'PawPal',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: const SplashScreen());
+        home: const PostingsScreen());
   }
 }
