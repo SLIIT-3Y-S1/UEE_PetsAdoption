@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:pawpal/common/widgets/medium_button.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
 import 'package:pawpal/core/constants/colors.dart';
-import 'package:pawpal/features/authentication/screens/signup_screen.dart';
+import 'package:pawpal/features/authentication/screens/login_screen.dart';
 
-
-/*main screen class*/
-
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
+class SignupScreen extends StatelessWidget {
+  const SignupScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,20 +30,26 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  const _FirstName(),
+                  const SizedBox(height: 20.0),
+                  const _LastName(),
+                  const SizedBox(height: 20.0),
+                  const _UserName(),
+                  const SizedBox(height: 20.0),
                   const _EmailTextField(),
-                  const SizedBox(height: 30.0),
+                  const SizedBox(height: 20.0),
                   const _PasswordTextField(),
                   const SizedBox(height: 30.0),
                   MediumButton(
                     color: AppColors.accentYellow,
-                    text: 'Login',
+                    text: 'Create account',
                     onPressed: () {
                       // Handle login logic here
                     },
                   ),
                   const SizedBox(height: 30.0),
                   Text(
-                    'New to pawpal?',
+                    'Already have an account ?',
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                           color: Colors.black,
                         ),
@@ -57,12 +59,11 @@ class LoginScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => SignupScreen()),
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
                       );
                     },
                     child: Text(
-                      'Register now',
+                      'Login',
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
                                 color: AppColors.accentRed,
@@ -89,12 +90,12 @@ class WelcomeTexts extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Welcome!',
+          'Create a New Account',
           style: Theme.of(context).textTheme.displayLarge,
         ),
         const SizedBox(height: 10.0),
         Text(
-          'Glad to see you again!',
+          'Let\'s Get Started !',
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ],
@@ -111,6 +112,51 @@ class _EmailTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'Email',
         hintText: 'Enter your email',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+}
+
+class _FirstName extends StatelessWidget {
+  const _FirstName({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const TextField(
+      decoration: InputDecoration(
+        labelText: 'First Name',
+        hintText: 'Enter your first name',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+}
+
+class _LastName extends StatelessWidget {
+  const _LastName({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const TextField(
+      decoration: InputDecoration(
+        labelText: 'Last Name',
+        hintText: 'Enter your last name',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+}
+
+class _UserName extends StatelessWidget {
+  const _UserName({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const TextField(
+      decoration: InputDecoration(
+        labelText: 'Username',
+        hintText: 'Enter a unique username',
         border: OutlineInputBorder(),
       ),
     );
