@@ -40,3 +40,5 @@ class AuthServiceImpl extends AuthService {
       rethrow;
     }
 }
+
+}
