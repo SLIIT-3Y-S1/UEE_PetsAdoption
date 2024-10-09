@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 // import 'package:pawpal/features/donations/widgets/custom_app_bar.dart';
 import 'package:pawpal/features/donations/widgets/custom_bottom_nav.dart';
+import 'package:pawpal/features/donations/widgets/donation_form_tab.dart';
 import 'package:pawpal/features/donations/widgets/donations_home_tab.dart';
 
-class DonationHomeScreen extends StatefulWidget {
+class DonationFormScreen extends StatefulWidget {
   @override
-  _DonationHomeScreenState createState() => _DonationHomeScreenState();
+  _DonationFormScreenState createState() => _DonationFormScreenState();
 }
 
-class _DonationHomeScreenState extends State<DonationHomeScreen>
+class _DonationFormScreenState extends State<DonationFormScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -40,8 +41,8 @@ class _DonationHomeScreenState extends State<DonationHomeScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          DonationRequestsTab(), // First tab content
-          OpenDonationsTab(), // Second tab content
+          DonationFormRequestsTab(), // First tab content
+          OpenDonationsFormTab(), // Second tab content
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(),

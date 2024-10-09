@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
+<<<<<<< HEAD
 import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_register_scn.dart';
 import 'package:pawpal/features/vets/screens/edit_vet_profile_screen.dart';
@@ -14,6 +15,10 @@ import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
 import 'package:pawpal/features/vets/screens/vets_list_screen.dart';
 import 'firebase_options.dart';
 import 'package:pawpal/theme/theme.dart';
+=======
+import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
+// import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
+>>>>>>> c6ddfcc (Created screens of Donation System)
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'PawPal',
+<<<<<<< HEAD
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         //   useMaterial3: true,
@@ -45,5 +51,12 @@ class MyApp extends StatelessWidget {
 
         theme: AppTheme.lightTheme,
         home: VetsLoginScreen());
+=======
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: DonationHomeScreen());
+>>>>>>> c6ddfcc (Created screens of Donation System)
   }
 }
