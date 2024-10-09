@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pawpal/core/data/model/auth/signupReq.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pawpal/core/data/model/auth/signup_request.dart';
 
 abstract class AuthService {
   Future<void> signUp(SignUpReq signUpReq);
