@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
-import 'package:pawpal/core/constants/colors.dart';
 import 'package:pawpal/features/profile/screens/profile_screen.dart';
 import 'package:pawpal/theme/theme.dart';
 
