@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pawpal/core/services/firestore_service.dart';
+import 'package:pawpal/features/vets/models/reviewModel.dart';
 
 class VetReviewsScreen extends StatefulWidget {
-  const VetReviewsScreen({super.key});
+  final String vetEmail;
+  const VetReviewsScreen({super.key, required this.vetEmail});
 
   @override
   _VetReviewsScreenState createState() => _VetReviewsScreenState();
@@ -9,51 +12,28 @@ class VetReviewsScreen extends StatefulWidget {
 
 class _VetReviewsScreenState extends State<VetReviewsScreen>
     with SingleTickerProviderStateMixin {
+  final FirestoreService _firestoreService = FirestoreService();
   late TabController _tabController;
 
   // Sample list of reviews with client name, comment, and rating
-  List<Map<String, dynamic>> reviews = [
-    {
-      'name': 'Alice Johnson',
-      'comment': 'Great service and friendly vet!',
-      'rating': 4.8
-    },
-    {
-      'name': 'Bob Smith',
-      'comment': 'The vet was professional and caring.',
-      'rating': 4.5
-    },
-    {
-      'name': 'Charlie Brown',
-      'comment': 'Not satisfied with the treatment provided.',
-      'rating': 2.0
-    },
-    {
-      'name': 'Diana Prince',
-      'comment': 'Absolutely loved how well my pet was treated!',
-      'rating': 5.0
-    },
-    {
-      'name': 'Eve Adams',
-      'comment': 'Very unprofessional. Poor experience.',
-      'rating': 1.5
-    },
-  ];
+  List<ReviewModel> reviews = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _fetchReviews();
   }
 
-  // Filter best and worst reviews
-  List<Map<String, dynamic>> getBestReviews() {
-    return reviews.where((review) => review['rating'] >= 4.0).toList();
+  void _fetchReviews() async {
+    List<ReviewModel> fetchedReviews =
+        await _firestoreService.fetchReviewsForVet(widget.vetEmail);
+    setState(() {
+      reviews = fetchedReviews;
+    });
   }
 
-  List<Map<String, dynamic>> getWorstReviews() {
-    return reviews.where((review) => review['rating'] < 3.0).toList();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +55,7 @@ class _VetReviewsScreenState extends State<VetReviewsScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildReviewsList(getBestReviews()),
+          _buildReviewsList(reviews),
           _buildWorstReviewsTab(),
         ],
       ),
@@ -83,7 +63,7 @@ class _VetReviewsScreenState extends State<VetReviewsScreen>
   }
 
   // Widget to display the list of reviews
-  Widget _buildReviewsList(List<Map<String, dynamic>> reviewsList) {
+  Widget _buildReviewsList(List<ReviewModel> reviewsList) {
     return reviewsList.isNotEmpty
         ? ListView.builder(
             padding: const EdgeInsets.all(16.0),
@@ -93,17 +73,17 @@ class _VetReviewsScreenState extends State<VetReviewsScreen>
               return _buildReviewCard(review);
             },
           )
-        : Center(
-            child: Text(
-              'No reviews available.',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
+        : const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
             ),
           );
   }
 
   // Special tab for worst reviews with a message if no bad reviews
   Widget _buildWorstReviewsTab() {
-    final worstReviews = getWorstReviews();
+    final worstReviews =
+        reviews.where((review) => review.rating < 3.0).toList();
     if (worstReviews.isEmpty) {
       return Center(
         child: Text(
@@ -117,7 +97,7 @@ class _VetReviewsScreenState extends State<VetReviewsScreen>
   }
 
   // Widget for individual review cards
-  Widget _buildReviewCard(Map<String, dynamic> review) {
+  Widget _buildReviewCard(ReviewModel review) {
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -134,16 +114,16 @@ class _VetReviewsScreenState extends State<VetReviewsScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  review['name'],
+                  review.reviewerName,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                _buildStarRating(review['rating']),
+                _buildStarRating(review.rating),
               ],
             ),
             const SizedBox(height: 10),
             // Comment
             Text(
-              review['comment'],
+              review.comment,
               style: TextStyle(fontSize: 16, color: Colors.grey[800]),
             ),
           ],

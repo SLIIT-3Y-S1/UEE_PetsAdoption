@@ -1,18 +1,40 @@
-
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:pawpal/core/services/firestore_service.dart';
+import 'package:pawpal/features/vets/models/reviewModel.dart';
+import 'package:pawpal/features/vets/models/vetModel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 // ignore_for_file: prefer_const_constructors
-class VetProfileScreen extends StatelessWidget {
-  const VetProfileScreen({super.key});
+class VetProfileScreen extends StatefulWidget {
+  final VetModel vetModel;
 
+  const VetProfileScreen({super.key, required this.vetModel});
+
+  @override
+  State<VetProfileScreen> createState() => _VetProfileScreenState();
+}
+
+class _VetProfileScreenState extends State<VetProfileScreen> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController reviewController = TextEditingController();
+  final FirestoreService _firestoreService = FirestoreService();
+  List<ReviewModel> reviewsList = [];
+
+  initState() {
+    super.initState();
+    _getReviews();
+  }
+
+  void _getReviews() async {
+    reviewsList =
+        await _firestoreService.fetchReviewsForVet(widget.vetModel.email);
+    setState(() {});
+  }
+
+  double rating = 0;
   void _showReviewDialog(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController reviewController = TextEditingController();
-    double rating = 0;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -73,11 +95,8 @@ class VetProfileScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                // Submit the review
-                print('Name: ${nameController.text}');
-                print('Rating: $rating');
-                print('Review: ${reviewController.text}');
-                Navigator.of(context).pop(); // Close dialog after submission
+                _saveReview();
+                Navigator.of(context).pop();
               },
               child: const Text('Submit'),
             ),
@@ -87,12 +106,44 @@ class VetProfileScreen extends StatelessWidget {
     );
   }
 
+  void _saveReview() async {
+    // Save review to Firestore
+    ReviewModel review = ReviewModel(
+      reviewerName: nameController.text,
+      rating: rating,
+      comment: reviewController.text,
+      date: DateTime.now(),
+    );
+
+    await _firestoreService.addReviewToFirestore(widget.vetModel.email, review);
+    reviewsList.add(review);
+    //calculate average rating
+    final double agvRating = calculateRating();
+
+    // Update vet's rating
+    await _firestoreService.updateRatingForVet(
+        widget.vetModel.email, agvRating);
+    Navigator.of(context).pop(); // Close dialog after submission
+  }
+
+  double calculateRating() {
+    double totalRating = 0;
+    if (reviewsList.isEmpty) {
+      return 0;
+    }
+    for (var review in reviewsList) {
+      totalRating += review.rating;
+    }
+    var ratingString = (totalRating / reviewsList.length).toStringAsFixed(1);
+    return double.parse(ratingString);
+  }
+
   @override
   Widget build(BuildContext context) {
     final PageController pageController = PageController();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vet Profile'),
+        title: Text(widget.vetModel.fullName),
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
       ),
@@ -105,16 +156,17 @@ class VetProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 20),
               color: Colors.blueAccent,
               child: Column(
-                children: const [
+                children: [
                   // Profile Picture
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/images/vets1.jpg'),
+                    backgroundImage:
+                        NetworkImage(widget.vetModel.profilePicUrl),
                   ),
                   SizedBox(height: 10),
                   // Vet Name
                   Text(
-                    'Dr. John Doe',
+                    'Dr. ${widget.vetModel.fullName}',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -135,10 +187,12 @@ class VetProfileScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.location_on, color: Colors.white),
-                      Text('Kampala', style: TextStyle(color: Colors.white)),
+                      Text(widget.vetModel.clinicLocation,
+                          style: TextStyle(color: Colors.white)),
                       SizedBox(width: 20),
                       Icon(Icons.star, color: Colors.yellow),
-                      Text('4.8', style: TextStyle(color: Colors.white)),
+                      Text('${widget.vetModel.rating}',
+                          style: TextStyle(color: Colors.white)),
                     ],
                   ),
                 ],
@@ -150,14 +204,14 @@ class VetProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    'About Dr. John Doe',
+                    'About Dr. ${widget.vetModel.fullName}',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Dr. John Doe has over 10 years of experience in treating animals and is known for his compassionate care. He specializes in small animals and provides a wide range of services.',
+                    widget.vetModel.bio,
                     style: TextStyle(fontSize: 16),
                   ),
                 ],
@@ -168,27 +222,22 @@ class VetProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     'Services Provided',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  ListTile(
-                    leading: Icon(Icons.check_circle, color: Colors.green),
-                    title: Text('General Check-up'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.check_circle, color: Colors.green),
-                    title: Text('Vaccinations'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.check_circle, color: Colors.green),
-                    title: Text('Surgery'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.check_circle, color: Colors.green),
-                    title: Text('Emergency Services'),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: widget.vetModel.services.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(widget.vetModel.services[index]),
+                        leading: Icon(Icons.check_circle, color: Colors.green),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -246,30 +295,34 @@ class VetProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                    height: 220, // Adjust height as needed
-                    child: PageView.builder(
-                      controller: pageController,
-                      itemCount: sampleReviews.length,
-                      itemBuilder: (context, index) {
-                        final review = sampleReviews[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: ReviewCard(review: review),
-                        );
-                      },
-                    ),
+                    height: reviewsList.isEmpty
+                        ? 50
+                        : 220, // Adjust height as needed
+                    child: reviewsList.isEmpty
+                        ? Center(
+                            child: Text('No reviews yet.'),
+                          )
+                        : PageView.builder(
+                            controller: pageController,
+                            itemCount: reviewsList.length,
+                            itemBuilder: (context, index) {
+                              return ReviewCard(review: reviewsList[index]);
+                            },
+                          ),
                   ),
                   const SizedBox(height: 10),
                   Center(
-                    child: SmoothPageIndicator(
-                      controller: pageController,
-                      count: sampleReviews.length,
-                      effect: const WormEffect(
-                        dotHeight: 8,
-                        dotWidth: 8,
-                        activeDotColor: Colors.blueAccent,
-                      ),
-                    ),
+                    child: reviewsList.isEmpty
+                        ? Container()
+                        : SmoothPageIndicator(
+                            controller: pageController,
+                            count: reviewsList.length,
+                            effect: WormEffect(
+                              dotWidth: 10,
+                              dotHeight: 10,
+                              activeDotColor: Colors.blueAccent,
+                            ),
+                          ),
                   ),
                   const SizedBox(height: 10),
                   Align(
@@ -277,7 +330,6 @@ class VetProfileScreen extends StatelessWidget {
                     child: TextButton(
                       onPressed: () {
                         _showReviewDialog(context);
-                        // Navigate to all reviews page
                       },
                       child: const Text('Add a Review'),
                     ),
@@ -293,49 +345,9 @@ class VetProfileScreen extends StatelessWidget {
   }
 }
 
-// Sample review data class
-class Review {
-  final String reviewerName;
-  final String reviewText;
-  final int rating;
-
-  Review({
-    required this.reviewerName,
-    required this.reviewText,
-    required this.rating,
-  });
-}
-
-// Sample reviews list
-final List<Review> sampleReviews = [
-  Review(
-    reviewerName: 'Jane Smith',
-    reviewText:
-        'Dr. John was very professional and kind to my dog. Highly recommend!',
-    rating: 5,
-  ),
-  Review(
-    reviewerName: 'Alex Johnson',
-    reviewText:
-        'Great service, Dr. John was helpful in an emergency situation.',
-    rating: 4,
-  ),
-  Review(
-    reviewerName: 'Emily Davis',
-    reviewText: 'My cat is healthy and happy thanks to Dr. John\'s care.',
-    rating: 5,
-  ),
-  Review(
-    reviewerName: 'Michael Brown',
-    reviewText: 'Efficient and caring. Dr. John made the visit stress-free.',
-    rating: 4,
-  ),
-  // Add more reviews as needed
-];
-
 // Updated ReviewCard for horizontal display
 class ReviewCard extends StatelessWidget {
-  final Review review;
+  final ReviewModel review;
 
   const ReviewCard({Key? key, required this.review}) : super(key: key);
 
@@ -377,7 +389,7 @@ class ReviewCard extends StatelessWidget {
               // Review Text
               Expanded(
                 child: Text(
-                  review.reviewText,
+                  review.comment,
                   style: const TextStyle(fontSize: 14),
                 ),
               ),
@@ -386,7 +398,7 @@ class ReviewCard extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  '2 days ago',
+                  '${review.date}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey[600],

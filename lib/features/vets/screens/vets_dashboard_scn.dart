@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:pawpal/features/vets/models/vetModel.dart';
 import 'package:pawpal/features/vets/screens/edit_vet_profile_screen.dart';
 import 'package:pawpal/features/vets/screens/feedback_screen.dart';
 import 'package:pawpal/features/vets/screens/manage_appointment.dart';
@@ -8,13 +9,15 @@ import 'package:pawpal/features/vets/screens/pet_recodes_screen.dart';
 
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: avoid_unnecessary_containers
-class VetHomeScreen extends StatelessWidget {
-  const VetHomeScreen({super.key});
+class VetsDashboardScn extends StatelessWidget {
+  final VetModel vet;
+  const VetsDashboardScn({super.key, required this.vet});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Vet Dashboard'),
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
@@ -45,7 +48,8 @@ class VetHomeScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditVetProfileScreen()));
+                          builder: (context) =>
+                              EditVetProfileScreen(vet: vet)));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(20),
@@ -62,17 +66,17 @@ class VetHomeScreen extends StatelessWidget {
                     ],
                   ),
                   child: Row(
-                    children: const [
+                    children: [
                       CircleAvatar(
                         radius: 40,
-                        backgroundImage: AssetImage('assets/images/vets1.jpg'),
+                        backgroundImage: Image.network(vet.profilePicUrl).image,
                       ),
                       SizedBox(width: 20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Dr. Mash',
+                            'Dr. ${vet.fullName}',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -97,7 +101,7 @@ class VetHomeScreen extends StatelessWidget {
               _buildStatsSection(),
               const SizedBox(height: 30),
 
-              // Payment Info Tile (Colorful and Interactive)
+              // Feedback Tile-----------------------
               _buildInteractiveTile(
                 context,
                 icon: Icons.feedback,
@@ -108,7 +112,9 @@ class VetHomeScreen extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => VetReviewsScreen()));
+                          builder: (context) => VetReviewsScreen(
+                                vetEmail: vet.email,
+                              )));
                 },
               ),
               const SizedBox(height: 20),
@@ -164,9 +170,7 @@ class VetHomeScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-         
-        },
+        onPressed: () {},
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
       ),

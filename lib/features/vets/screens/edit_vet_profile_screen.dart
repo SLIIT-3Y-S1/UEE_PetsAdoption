@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pawpal/core/services/firestore_service.dart';
+import 'package:pawpal/core/services/storage_service.dart';
+import 'package:pawpal/features/vets/models/vetModel.dart';
 
 class EditVetProfileScreen extends StatefulWidget {
-  const EditVetProfileScreen({super.key});
+  final VetModel vet;
+  const EditVetProfileScreen({super.key, required this.vet});
 
   @override
   _EditVetProfileScreenState createState() => _EditVetProfileScreenState();
@@ -11,24 +15,44 @@ class EditVetProfileScreen extends StatefulWidget {
 
 class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController bioController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
 
-  List<String> services = ['General Check-up', 'Vaccinations', 'Surgery'];
-  List<String> personalDetails = [
-    'Dr. Mash',
-    '0716514923',
-    'Malabe',
-    'Bio here, this is my bio details'
-  ];
+  List<String> personalDetails = [];
+  List<dynamic> services = [];
 
+  @override
+  void initState() {
+    super.initState();
+    personalDetails = [
+      '${widget.vet.fullName}',
+      '${widget.vet.phone}',
+      '${widget.vet.clinicLocation}',
+      '${widget.vet.bio}',
+    ];
+    services = widget.vet.services.cast<String>();
+  }
+
+  final FirestoreService _firestoreService = FirestoreService();
+  final StorageService _storageService = StorageService();
   Future<void> _pickImage() async {
+    print('Picking Image');
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       _imageFile = pickedFile;
     });
+    if (_imageFile != null) {
+      final File imageFile = File(_imageFile!.path);
+      final String? imageUrl = await _storageService.uploadVetProfileImage(
+          imageFile, widget.vet.email);
+      if (imageUrl != null) {
+        _firestoreService.updateVetProfilePic(widget.vet.email, imageUrl);
+        print('Image uploaded successfully!');
+      }
+    }
   }
 
   @override
@@ -37,6 +61,20 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
     bioController.dispose();
     locationController.dispose();
     super.dispose();
+  }
+
+  void handelSaveBtn() {
+    print(personalDetails);
+    print(services);
+
+    _firestoreService.updateVetData(
+      email: widget.vet.email,
+      fullName: personalDetails[0],
+      phone: personalDetails[1],
+      clinicLocation: personalDetails[2],
+      bio: personalDetails[3],
+      services: services,
+    );
   }
 
   @override
@@ -49,6 +87,7 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
         actions: [
           IconButton(
             onPressed: () {
+              handelSaveBtn();
               print('Profile Saved!');
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Profile Updated Successfully!')),
@@ -86,7 +125,7 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
               CircleAvatar(
                 radius: 60,
                 backgroundImage: _imageFile == null
-                    ? AssetImage('assets/images/vets1.jpg') as ImageProvider
+                    ? Image.network(widget.vet.profilePicUrl).image
                     : FileImage(File(_imageFile!.path)),
               ),
               Positioned(
@@ -102,7 +141,7 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            'Dr. Mash',
+            'Dr. ${widget.vet.fullName}',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           Text(
@@ -262,7 +301,8 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  services.add(serviceController.text);
+                  // services.add(serviceController.text);
+                  widget.vet.addService(serviceController.text);
                 });
                 Navigator.of(context).pop();
               },
@@ -299,7 +339,8 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
                 setState(() {
                   int index = services.indexOf(currentService);
                   if (index != -1) {
-                    services[index] = serviceController.text;
+                    // services[index] = serviceController.text;
+                    widget.vet.updateService(index, serviceController.text);
                   }
                 });
                 Navigator.of(context).pop();

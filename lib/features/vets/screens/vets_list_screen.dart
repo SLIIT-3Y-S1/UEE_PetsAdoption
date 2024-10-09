@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:ui'; // For BackdropFilter
+import 'package:pawpal/core/services/firestore_service.dart';
+import 'dart:ui';
 
 import 'package:pawpal/core/widgets/vets_widgets/vet_card.dart';
+import 'package:pawpal/features/vets/models/vetModel.dart';
 
 class VetsListScreen extends StatefulWidget {
   const VetsListScreen({super.key});
@@ -57,6 +59,18 @@ class _VetsListScreenState extends State<VetsListScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  // getReview list
+  // void getReview() async {
+  //   final FirestoreService _firestoreService = FirestoreService();
+  //   List<VetModel> fetchedVets = await _firestoreService.fetchReviewsForVet();
+  //   print(fetchedVets);
+  // }
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2, // Number of tabs
@@ -96,31 +110,86 @@ class _VetsListScreenState extends State<VetsListScreen> {
 }
 
 // First Tab Content (All Vets)
-class AllVetsTab extends StatelessWidget {
+class AllVetsTab extends StatefulWidget {
   const AllVetsTab({super.key});
 
   @override
+  State<AllVetsTab> createState() => _AllVetsTabState();
+}
+
+class _AllVetsTabState extends State<AllVetsTab> {
+  final FirestoreService _firestoreService = FirestoreService();
+  late List<VetModel> _vetsList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchVets(); // Fetch the vet list when the state is initialized
+  }
+
+  // Separate async method to fetch the vets list
+  Future<void> _fetchVets() async {
+    List<VetModel> fetchedVets = await _firestoreService.getVetList();
+    print(fetchedVets);
+    setState(() {
+      _vetsList = fetchedVets;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 100,
-      itemBuilder: (context, index) {
-        return const VetCard(); // Reuse your VetCard widget
-      },
-    );
+    return _vetsList.isEmpty
+        ? const Center(
+            child:
+                CircularProgressIndicator()) // Show a loader while the list is loading
+        : ListView.builder(
+            itemCount: _vetsList.length,
+            itemBuilder: (context, index) {
+              return VetCard(
+                  vetModel: _vetsList[
+                      index]); // Pass the current vet to the VetCard widget
+            },
+          );
   }
 }
 
 // Second Tab Content (Top Rated Vets)
-class TopRatedVetsTab extends StatelessWidget {
+class TopRatedVetsTab extends StatefulWidget {
   const TopRatedVetsTab({super.key});
 
   @override
+  State<TopRatedVetsTab> createState() => _TopRatedVetsTabState();
+}
+
+class _TopRatedVetsTabState extends State<TopRatedVetsTab> {
+  final FirestoreService _firestoreService = FirestoreService();
+  List<VetModel> _topRatedVets = [];
+  @override
+  void initState() {
+    filterTopRatedVets();
+    super.initState();
+  }
+
+  // filter top rated vets
+  void filterTopRatedVets() async {
+    _topRatedVets = await _firestoreService.fetchTopRatedVets();
+    setState(() {});
+  }
+  // print(fetchedVets);
+
+  @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 50,
-      itemBuilder: (context, index) {
-        return const VetCard(); // Same VetCard, but you can filter for top-rated vets
-      },
-    );
+    return _topRatedVets.isEmpty
+        ? const Center(
+            child:
+                CircularProgressIndicator()) // Show a loader while the list is loading
+        : ListView.builder(
+            itemCount: _topRatedVets.length,
+            itemBuilder: (context, index) {
+              return VetCard(
+                vetModel: _topRatedVets[index],
+              ); // Same VetCard, but you can filter for top-rated vets
+            },
+          );
   }
 }

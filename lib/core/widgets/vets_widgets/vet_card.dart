@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pawpal/features/vets/models/reviewModel.dart';
+import 'package:pawpal/features/vets/models/vetModel.dart';
 import 'package:pawpal/features/vets/screens/vet_profile_screen.dart';
 
-class VetCard extends StatelessWidget {
-  const VetCard({super.key});
+class VetCard extends StatefulWidget {
+  final VetModel vetModel;
+
+  const VetCard({super.key, required this.vetModel});
+
+  @override
+  State<VetCard> createState() => _VetCardState();
+}
+
+class _VetCardState extends State<VetCard> {
+  List<ReviewModel> reviewsList = [];
+
   void _showCallDialogBox(BuildContext context) {
     showDialog(
       context: context,
@@ -34,7 +46,8 @@ class VetCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return const VetProfileScreen();
+          return VetProfileScreen(
+              vetModel: widget.vetModel);
         }));
       },
       child: Card(
@@ -44,40 +57,41 @@ class VetCard extends StatelessWidget {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(children: const [
+                  Row(children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: AssetImage('assets/images/vets1.jpg'),
+                      backgroundImage:
+                          Image.network(widget.vetModel.profilePicUrl).image,
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Dr. John Doe',
-                            style: TextStyle(
+                        Text('Dr.${widget.vetModel.fullName}',
+                            style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             )),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.location_on,
                                   color: Colors.black12,
                                 ),
-                                Text('Kampala'),
+                                Text(widget.vetModel.clinicLocation),
                               ],
                             ),
-                            SizedBox(width: 20),
+                            const SizedBox(width: 20),
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.star,
                                   color: Colors.yellow,
                                 ),
-                                Text('4.5'),
+                                Text('${widget.vetModel.rating}'),
                               ],
                             ),
                           ],
