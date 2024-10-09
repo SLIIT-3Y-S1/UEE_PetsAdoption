@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pawpal/common/widgets/medium_button.dart';
+import 'package:pawpal/widgets/common/medium_button.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
 import 'package:pawpal/core/constants/colors.dart';
 import 'package:pawpal/features/authentication/screens/login_screen.dart';
