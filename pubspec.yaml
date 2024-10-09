@@ -50,6 +50,7 @@ dependencies:
 
   # State Management
   bloc: ^8.1.4
+  flutter_bloc: ^8.1.0
   
   #Object comparision and boilerplate code reduction
   equatable: ^2.0.0

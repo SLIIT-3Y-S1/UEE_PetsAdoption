@@ -1,16 +1,20 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:pawpal/features/postings/screens/postings_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+//import 'package:pawpal/features/postings/screens/postings_screen.dart';
 import 'package:pawpal/features/splash/screens/splash_screen.dart';
 import 'package:pawpal/firebase_options.dart';
+import 'package:pawpal/simple_bloc_observer.dart';
 import 'package:pawpal/theme/theme.dart';
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 
 
 Future <void> main() async {
    WidgetsFlutterBinding.ensureInitialized();
+   Bloc.observer = SimpleBlocObserver();
+   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
