@@ -3,18 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:pawpal/features/postings/screens/postings_screen.dart';
-import 'package:pawpal/features/splash/screens/splash_screen.dart';
+import 'package:pawpal/core/data/repository/implementations/user_imp.dart';
+import 'package:pawpal/mainApp.dart';
 import 'package:pawpal/firebase_options.dart';
 import 'package:pawpal/simple_bloc_observer.dart';
-import 'package:pawpal/theme/theme.dart';
-//import 'package:path_provider/path_provider.dart';
+//import 'package:pawpal/splash_screen.dart';
 
 
-Future <void> main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-   Bloc.observer = SimpleBlocObserver();
-   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = SimpleBlocObserver();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -22,20 +21,18 @@ Future <void> main() async {
     DevicePreview(
       enabled: true,
       tools: const [...DevicePreview.defaultTools],
-      builder: (context) => const MyApp(),
+      builder: (context) => MainApp(UserImp()),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //       title: 'PawPal',
+  //       debugShowCheckedModeBanner: false,
+  //       theme: AppTheme.lightTheme,
+  //       home: const SplashScreen());
+  // }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'PawPal',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        home: const SplashScreen());
-  }
-}
+ 
