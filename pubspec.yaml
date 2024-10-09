@@ -80,6 +80,8 @@ flutter:
     - assets/icons/
     - assets/vectors/nav/
     - assets/vectors/drawer/
+    - assets/images/dog_food.jpg
+    - assets/images/pawpal.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
