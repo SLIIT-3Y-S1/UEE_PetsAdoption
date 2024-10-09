@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pawpal/core/data/model/user_model.dart';
 
 abstract class UserRepo {
@@ -12,4 +13,7 @@ abstract class UserRepo {
   
   //get user data
   Future<UserModel> getUserData(String id);
+
+  //get user stream
+  Stream<User?> get user;
 }

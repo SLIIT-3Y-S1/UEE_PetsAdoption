@@ -70,4 +70,12 @@ class UserImp implements UserRepo {
       rethrow;
     }
   }
+
+  @override
+  Stream<User?> get user {
+    return _firebaseAuth.authStateChanges().map((firebaseUser) {
+      final user = firebaseUser;
+      return user;
+    });
+  }
 }
