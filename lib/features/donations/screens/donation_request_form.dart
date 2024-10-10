@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // For picking images
-import 'dart:io'; // For File class
+import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
+import 'dart:io';
+
+import 'package:pawpal/features/donations/service/donation_service.dart'; // For File class
 
 class DonationRequestForm extends StatefulWidget {
   @override
@@ -8,6 +11,8 @@ class DonationRequestForm extends StatefulWidget {
 }
 
 class _DonationRequestFormState extends State<DonationRequestForm> {
+  final DonationService donationService = DonationService();
+
   final _formKey = GlobalKey<FormState>();
   String? _title;
   String? _category;
@@ -196,6 +201,20 @@ class _DonationRequestFormState extends State<DonationRequestForm> {
                     print("Location: $_location");
                     print("Images: ${_images!.length}");
                   }
+
+                  // donationService.addDonation(
+                  //     _title, _description, _category, _contact, _location);
+
+                  donationService.addDonation(
+                      _title, _description, _category, _contact, _location);
+
+                  print("Added donation request");
+                  // donationService.generateCode();
+                  // navigate to the home screen
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                        builder: (context) => DonationHomeScreen()),
+                  );
                 },
                 child: Text('POST'),
               ),

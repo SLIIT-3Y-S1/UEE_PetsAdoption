@@ -1,4 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
+<<<<<<< HEAD
+=======
+// here I want to impport firebase_options.dart from the package
+import 'package:pawpal/firebase_options.dart';
+>>>>>>> 77b470d (added crud ops)
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
 <<<<<<< HEAD
@@ -22,9 +27,14 @@ import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+<<<<<<< HEAD
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+=======
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+>>>>>>> 77b470d (added crud ops)
   runApp(
     // const MyApp(),
     DevicePreview(
