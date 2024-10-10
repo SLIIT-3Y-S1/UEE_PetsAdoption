@@ -11,16 +11,16 @@ class AppTheme {
       textTheme: ButtonTextTheme.primary,
     ),
     textTheme: const TextTheme(
-      headline1: TextStyle(fontFamily: 'Roboto', fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-      headline2: TextStyle(fontFamily: 'Roboto', fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-      bodyText1: TextStyle(fontFamily: 'Lato', fontSize: 16, fontWeight: FontWeight.normal, color: AppColors.textPrimary),
-      bodyText2: TextStyle(fontFamily: 'Lato', fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.textSecondary),
-      button: TextStyle(fontFamily: 'Roboto', fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.buttonText),
+      displayLarge: TextStyle(fontFamily: 'Roboto', fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+      displayMedium: TextStyle(fontFamily: 'Roboto', fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+      bodyLarge: TextStyle(fontFamily: 'Lato', fontSize: 16, fontWeight: FontWeight.normal, color: AppColors.textPrimary),
+      bodyMedium: TextStyle(fontFamily: 'Lato', fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.textSecondary),
+      labelLarge: TextStyle(fontFamily: 'Roboto', fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.buttonText),
     ),
     inputDecorationTheme: const InputDecorationTheme(
       filled: true,
       fillColor: AppColors.inputBackground,
       border: OutlineInputBorder(),
-    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.accent).copyWith(background: AppColors.background),
+    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.accent).copyWith(surface: AppColors.background),
   );
 }

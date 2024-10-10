@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
-//import mydiscussion page
+// Import the DiscussionsHomeScreen
+import 'discussion_home_screen.dart';
 import 'newdiscussion.dart';
-import 'mydiscussions.dart';
 
-class DiscussionsHomeScreen extends StatefulWidget {
-  const DiscussionsHomeScreen({super.key});
+class MyDiscussionsScreen extends StatefulWidget {
+  const MyDiscussionsScreen({super.key});
 
   @override
-  State<DiscussionsHomeScreen> createState() => _DiscussionsHomeScreenState();
+  State<MyDiscussionsScreen> createState() => _MyDiscussionsScreenState();
 }
 
-class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
+class _MyDiscussionsScreenState extends State<MyDiscussionsScreen> {
   // Sample data for discussions
   final List<Map<String, dynamic>> discussions = [
     {
-      'title': 'Best Tricks To Teach A Dog',
-      'description': 'What are some of your favorite tricks to teach a dog? Dogs can learn different types of tricks...',
+      'title': 'sample title in my discussions ',
+      'description': 'sample description in my discussion page',
       'likes': 15500,
       'comments': 568,
       'views': 30200,
@@ -84,8 +84,14 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
                     TextButton(
                       onPressed: () {
                         setState(() {
-                          isDiscussionsPage = true;
+                          isDiscussionsPage = false;
                         });
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DiscussionsHomeScreen(),
+                          ),
+                        );
                       },
                       child: const Text(
                         'Discussions',
@@ -95,11 +101,11 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
                       ),
                     ),
                     // Yellow line under Discussions button if it's the active page
-                    if (isDiscussionsPage)
+                    if (!isDiscussionsPage)
                       Container(
                         height: 2.0,
                         width: 100.0,
-                        color: Colors.yellow, // Yellow underline
+                        color: Colors.transparent, // Yellow underline
                       ),
                   ],
                 ),
@@ -109,14 +115,8 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
                     TextButton(
                       onPressed: () {
                         setState(() {
-                          isDiscussionsPage = false;
+                          isDiscussionsPage = true;
                         });
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyDiscussionsScreen(),
-                          ),
-                        );
                       },
                       child: const Text(
                         'My Discussions',
@@ -126,11 +126,11 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
                       ),
                     ),
                     // Empty space to align with Discussions underline
-                    if (!isDiscussionsPage)
+                    if (isDiscussionsPage)
                       Container(
                         height: 2.0,
                         width: 100.0,
-                        color: Colors.transparent, // No underline for inactive
+                        color: Colors.yellow, // No underline for inactive
                       ),
                   ],
                 ),
@@ -193,73 +193,28 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
                 final discussion = discussions[index];
                 return Card(
                   margin: const EdgeInsets.all(8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0), // Added padding inside the card
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Title of the discussion
-                        Text(
-                          discussion['title'],
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8), // Space between title and description
-                        // Description of the discussion
-                        Text(
-                          discussion['description'],
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 16), // Space between description and buttons
-                        // Like, Comment, and Favorite Buttons Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Likes and comments section
-                            Row(
-                              children: [
-                                // Like button and count
-                                IconButton(
-                                  icon: const Icon(Icons.favorite_border),
-                                  onPressed: () {
-                                    // Handle like button tap
-                                  },
-                                ),
-                                Text('${discussion['likes']}'),
-                                const SizedBox(width: 16),
-                                // Comment button and count
-                                IconButton(
-                                  icon: const Icon(Icons.comment),
-                                  onPressed: () {
-                                    // Handle comment button tap
-                                  },
-                                ),
-                                Text('${discussion['comments']}'),
-                              ],
-                            ),
-                            // Favorite button on the right side
-                            IconButton(
-                              icon: Icon(
-                                discussion['isFavorite']
-                                    ? Icons.star
-                                    : Icons.star_border,
-                                color: discussion['isFavorite']
-                                    ? Colors.yellow
-                                    : null,
-                              ),
-                              onPressed: () {
-                                // Handle favorite button tap
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
+                  child: ListTile(
+                    title: Text(discussion['title']),
+                    subtitle: Text(discussion['description']),
+                    trailing: IconButton(
+                      icon: Icon(
+                        discussion['isFavorite']
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: discussion['isFavorite'] ? Colors.yellow : null,
+                      ),
+                      onPressed: () {
+                        // Handle favorite/unfavorite action
+                      },
                     ),
+                    isThreeLine: true,
+                    leading: Icon(
+                      Icons.favorite,
+                      color: discussion['isFavorite'] ? Colors.red : Colors.grey,
+                    ),
+                    onTap: () {
+                      // Handle tap on the discussion item
+                    },
                   ),
                 );
               },
@@ -275,7 +230,7 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/adopt.png',
+              'assets/icons/adopt.png', 
               width: 32.25, // Updated size
               height: 32.25,
             ),
@@ -320,19 +275,21 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen> {
               // Navigate to the adopt screen (replace with your screen)
               break;
             case 1:
-              // Navigate to the discussions screen (replace with your screen)
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DiscussionsHomeScreen()),
+              );
               break;
             case 2:
               // Navigate to My Discussions Screen
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NewDiscussionPage(),
-                ),
+              context,
+              MaterialPageRoute(builder: (context) => const NewDiscussionPage()),
               );
               break;
             case 3:
               // Navigate to the donation screen (replace with your screen)
+
               break;
             case 4:
               // Navigate to the vet screen (replace with your screen)
