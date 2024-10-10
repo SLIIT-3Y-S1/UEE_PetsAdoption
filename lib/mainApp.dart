@@ -6,6 +6,7 @@ import 'package:pawpal/blocs/sign_up_bloc/sign_up_bloc.dart';
 // import 'package:pawpal/blocs/user_bloc/usermodel_bloc.dart';
 import 'package:pawpal/core/data/repository/user_repo.dart';
 import 'package:pawpal/features/authentication/screens/signup_screen.dart';
+import 'package:pawpal/features/common/homescreen.dart';
 import 'package:pawpal/features/postings/screens/postings_screen.dart';
 import 'package:pawpal/theme/theme.dart';
 
@@ -40,7 +41,7 @@ class MyAppView extends StatelessWidget {
 			home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
 				builder: (context, state) {
 					if(state.status == AuthenticationStatus.authenticated) {
-						return const PostingsScreen();
+						return const Homescreen();
 					} else {
 						return BlocProvider<SignUpBloc>(
               create: (context) => SignUpBloc(

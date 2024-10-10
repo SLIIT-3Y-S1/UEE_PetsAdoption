@@ -83,16 +83,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         MediumButton(
                           color: AppColors.accentYellow,
                           text: 'Login',
-                          onPressed: () {
+                            onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              context.read()<SignInBloc>().add(
-                                    SignInRequired(
-                                      email: emailController.text,
-                                      password: passwordController.text,
-                                    ),
-                                  );
+                              context.read<SignInBloc>().add(
+                                SignInRequired(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                ),
+                                );
+                              setState(() {
+                              signInState = true;
+                              });
                             }
-                          },
+                            },
                         ),
                         const SizedBox(height: 30.0),
                         Text(

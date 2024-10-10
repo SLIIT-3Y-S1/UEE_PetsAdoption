@@ -11,9 +11,6 @@ class _VetsHomeScreenState extends State<VetsHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vets'),
-      ),
       body: const Center(
         child: Text('Vets Home Screen'),
       ),
