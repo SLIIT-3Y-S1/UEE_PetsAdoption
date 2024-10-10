@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawpal/blocs/auth_bloc/authentication_bloc.dart';
 import 'package:pawpal/blocs/sign_up_bloc/sign_up_bloc.dart';
-// import 'package:pawpal/blocs/sign_in_bloc/sign_in_bloc.dart';
-// import 'package:pawpal/blocs/user_bloc/usermodel_bloc.dart';
 import 'package:pawpal/core/data/repository/user_repo.dart';
 import 'package:pawpal/features/authentication/screens/signup_screen.dart';
 import 'package:pawpal/features/common/homescreen.dart';
-import 'package:pawpal/features/postings/screens/postings_screen.dart';
 import 'package:pawpal/theme/theme.dart';
 
 class MainApp extends StatelessWidget {
