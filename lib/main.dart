@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:pawpal/core/services/auth_service.dart';
+import 'package:pawpal/core/services/firestore_service.dart';
+import 'package:pawpal/features/auth/bloc/vet_auth_bloc.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_register_scn.dart';
 import 'package:pawpal/features/vets/screens/edit_vet_profile_screen.dart';
@@ -14,6 +17,7 @@ import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
 import 'package:pawpal/features/vets/screens/vets_list_screen.dart';
 import 'firebase_options.dart';
 import 'package:pawpal/theme/theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,11 +25,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    // const MyApp(),
-    DevicePreview(
-      enabled: true,
-      tools: const [...DevicePreview.defaultTools],
-      builder: (context) => const MyApp(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => VetAuthBloc(AuthService(), FirestoreService()),
+        ),
+      ],
+      child: MyApp(),
     ),
   );
 }

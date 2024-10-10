@@ -1,13 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
 import 'package:pawpal/core/services/storage_service.dart';
+import 'package:pawpal/features/auth/bloc/vet_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/vet_auth_event.dart';
+import 'package:pawpal/features/auth/bloc/vet_auth_state.dart';
 import 'package:pawpal/features/vets/models/vetModel.dart';
 
 class EditVetProfileScreen extends StatefulWidget {
-  final VetModel vet;
-  const EditVetProfileScreen({super.key, required this.vet});
+  const EditVetProfileScreen({super.key});
 
   @override
   _EditVetProfileScreenState createState() => _EditVetProfileScreenState();
@@ -24,21 +27,10 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
   List<String> personalDetails = [];
   List<dynamic> services = [];
 
-  @override
-  void initState() {
-    super.initState();
-    personalDetails = [
-      '${widget.vet.fullName}',
-      '${widget.vet.phone}',
-      '${widget.vet.clinicLocation}',
-      '${widget.vet.bio}',
-    ];
-    services = widget.vet.services.cast<String>();
-  }
-
   final FirestoreService _firestoreService = FirestoreService();
   final StorageService _storageService = StorageService();
-  Future<void> _pickImage() async {
+
+  Future<void> _pickImage(String email) async {
     print('Picking Image');
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -46,29 +38,21 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
     });
     if (_imageFile != null) {
       final File imageFile = File(_imageFile!.path);
-      final String? imageUrl = await _storageService.uploadVetProfileImage(
-          imageFile, widget.vet.email);
+      final String? imageUrl =
+          await _storageService.uploadVetProfileImage(imageFile, email);
       if (imageUrl != null) {
-        _firestoreService.updateVetProfilePic(widget.vet.email, imageUrl);
+        _firestoreService.updateVetProfilePic(email, imageUrl);
         print('Image uploaded successfully!');
       }
     }
   }
 
-  @override
-  void dispose() {
-    nameController.dispose();
-    bioController.dispose();
-    locationController.dispose();
-    super.dispose();
-  }
-
-  void handelSaveBtn() {
+  void handelSaveBtn(VetModel vet) {
     print(personalDetails);
     print(services);
 
     _firestoreService.updateVetData(
-      email: widget.vet.email,
+      email: vet.email,
       fullName: personalDetails[0],
       phone: personalDetails[1],
       clinicLocation: personalDetails[2],
@@ -85,38 +69,66 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {
-              handelSaveBtn();
-              print('Profile Saved!');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Profile Updated Successfully!')),
-              );
+          BlocBuilder<VetAuthBloc, VetAuthState>(
+            builder: (context, state) {
+              if (state is VetAuthSuccess) {
+                return IconButton(
+                  onPressed: () {
+                    handelSaveBtn(state.vet);
+                    print('Profile Saved!');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Profile Updated Successfully!')),
+                    );
+                  },
+                  icon: const Icon(Icons.save),
+                );
+              }
+              return const SizedBox.shrink();
             },
-            icon: Icon(Icons.save),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProfileSection(),
-            const SizedBox(height: 20),
-            _buildPersonalDetailsCard(),
-            const SizedBox(height: 20),
-            _buildServicesSection(),
-            const SizedBox(height: 20),
-            _buildAvailabilitySection(),
-          ],
-        ),
+      body: BlocBuilder<VetAuthBloc, VetAuthState>(
+        builder: (context, state) {
+          if (state is VetAuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is VetAuthSuccess) {
+            final vet = state.vet;
+            personalDetails = [
+              vet.fullName,
+              vet.phone,
+              vet.clinicLocation,
+              vet.bio,
+            ];
+            services = vet.services.cast<String>();
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildProfileSection(vet),
+                  const SizedBox(height: 20),
+                  _buildPersonalDetailsCard(),
+                  const SizedBox(height: 20),
+                  _buildServicesSection(),
+                  const SizedBox(height: 20),
+                  _buildAvailabilitySection(),
+                ],
+              ),
+            );
+          } else if (state is VetAuthFailure) {
+            return Center(child: Text('Error: ${state.error}'));
+          }
+          return const Center(child: Text('Unknown state'));
+        },
       ),
     );
   }
 
   // Profile Section with image upload
-  Widget _buildProfileSection() {
+  Widget _buildProfileSection(VetModel vet) {
     return Center(
       child: Column(
         children: [
@@ -125,15 +137,15 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
               CircleAvatar(
                 radius: 60,
                 backgroundImage: _imageFile == null
-                    ? Image.network(widget.vet.profilePicUrl).image
+                    ? Image.network(vet.profilePicUrl).image
                     : FileImage(File(_imageFile!.path)),
               ),
               Positioned(
                 bottom: 0,
                 right: 0,
                 child: IconButton(
-                  icon: Icon(Icons.camera_alt, color: Colors.white),
-                  onPressed: _pickImage,
+                  icon: const Icon(Icons.camera_alt, color: Colors.white),
+                  onPressed: () => _pickImage(vet.email),
                   color: Colors.blueAccent,
                 ),
               ),
@@ -141,8 +153,8 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            'Dr. ${widget.vet.fullName}',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            'Dr. ${vet.fullName}',
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           Text(
             'Veterinary Doctor',
@@ -301,8 +313,7 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  // services.add(serviceController.text);
-                  widget.vet.addService(serviceController.text);
+                  services.add(serviceController.text);
                 });
                 Navigator.of(context).pop();
               },
@@ -340,7 +351,7 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
                   int index = services.indexOf(currentService);
                   if (index != -1) {
                     // services[index] = serviceController.text;
-                    widget.vet.updateService(index, serviceController.text);
+                    services[index] = serviceController.text;
                   }
                 });
                 Navigator.of(context).pop();
@@ -361,33 +372,39 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Info'),
+          title: const Text('Edit Info'),
           content: TextField(
             controller: detailsController,
-            decoration: InputDecoration(hintText: 'Enter Here'),
+            decoration: const InputDecoration(hintText: 'Enter Here'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
                 setState(() {
                   int index = personalDetails.indexOf(currentDetail);
                   if (index != -1) {
+                    // Update the personalDetails list
                     personalDetails[index] = detailsController.text;
+                    // Dispatch event to Bloc with the updated details
+                    BlocProvider.of<VetAuthBloc>(context).add(
+                      UpdateVetDetails(personalDetails),
+                    );
                   }
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Update'),
+              child: const Text('Update'),
             ),
           ],
         );
       },
     );
   }
+
 }

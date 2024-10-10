@@ -103,7 +103,7 @@ class _VetsRegisterScreenState extends State<VetsRegisterScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => VetsDashboardScn(vet: savedVet),
+            builder: (context) => VetsDashboardScn(),
           ),
         );
         print('Vet successfully registered: ${savedVet.fullName}');
