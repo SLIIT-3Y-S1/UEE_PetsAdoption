@@ -1,6 +1,5 @@
 // vet_auth_bloc.dart
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:pawpal/core/services/auth_service.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
 import 'package:pawpal/features/vets/models/vetModel.dart';
@@ -35,6 +34,38 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
         emit(VetAuthFailure('Login failed: $e'));
       }
     });
+  // vet register request handler
+    on<VetAuthRegisterRequested>((event, emit) async {
+      emit(VetRegisterLoading());
+      try {
+        final user = await _authService.signUpWithEmailAndPassword(
+          event.email, event.password);
+        
+        if (user != null) {
+          final VetModel newVet = VetModel(
+            email: event.email,
+            fullName: event.fullName,
+            phone: event.phone,
+            clinicLocation: event.clinicLocation,
+            nic: event.nic,
+            vetLicenseNo: event.vetLicenseNo,
+            clinicName: event.clinicName,
+            issueDate: event.issueDate,
+          );
+          
+          final VetModel? savedVet = await _firestoreService.addVetToFirestore(newVet);
+          
+          if (savedVet != null) {
+            emit(VetRegisterSuccess(savedVet));
+          } else {
+            emit(VetRegisterFailure('Failed to save vet data'));
+          }
+        }
+      } catch (e) {
+        emit(VetRegisterFailure('Registration failed: $e'));
+      }
+    });
+
 
     // Update vet details event handler
     on<UpdateVetDetails>((event, emit) {

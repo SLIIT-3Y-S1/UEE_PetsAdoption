@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pawpal/core/services/auth_service.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_event.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_state.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_register_scn.dart';
 import 'package:pawpal/features/vets/models/vetModel.dart';
 import 'package:pawpal/features/vets/screens/feedback_screen.dart';
 import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
 
 
 class VetsLoginScreen extends StatefulWidget {

@@ -18,3 +18,16 @@ class VetAuthFailure extends VetAuthState {
 
   VetAuthFailure(this.error);
 }
+
+// Register states
+class VetRegisterInitial extends VetAuthState {}
+class VetRegisterLoading extends VetAuthState {}
+class VetRegisterSuccess extends VetAuthState {
+  final VetModel vet;
+  VetRegisterSuccess(this.vet);
+}
+class VetRegisterFailure extends VetAuthState {
+  final String error;
+  VetRegisterFailure(this.error);
+}
+

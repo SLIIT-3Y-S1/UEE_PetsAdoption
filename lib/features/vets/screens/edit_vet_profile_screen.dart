@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
 import 'package:pawpal/core/services/storage_service.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_bloc.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_event.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_state.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
 import 'package:pawpal/features/vets/models/vetModel.dart';
 
 class EditVetProfileScreen extends StatefulWidget {
@@ -71,10 +71,11 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
         actions: [
           BlocBuilder<VetAuthBloc, VetAuthState>(
             builder: (context, state) {
-              if (state is VetAuthSuccess) {
+              if (state is VetAuthSuccess || state is VetRegisterSuccess) {
+                VetModel vet = (state as dynamic).vet;
                 return IconButton(
                   onPressed: () {
-                    handelSaveBtn(state.vet);
+                    handelSaveBtn(vet);
                     print('Profile Saved!');
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -406,5 +407,4 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
       },
     );
   }
-
 }

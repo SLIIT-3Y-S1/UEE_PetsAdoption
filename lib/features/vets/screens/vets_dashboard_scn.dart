@@ -7,8 +7,8 @@ import 'package:pawpal/features/vets/screens/feedback_screen.dart';
 import 'package:pawpal/features/vets/screens/manage_appointment.dart';
 import 'package:pawpal/features/vets/screens/msg_list_screeen.dart';
 import 'package:pawpal/features/vets/screens/pet_recodes_screen.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_bloc.dart';
-import 'package:pawpal/features/auth/bloc/vet_auth_state.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
 
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: avoid_unnecessary_containers
@@ -19,8 +19,8 @@ class VetsDashboardScn extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<VetAuthBloc, VetAuthState>(
       builder: (context, state) {
-        if (state is VetAuthSuccess) {
-          VetModel vet = state.vet;
+        if (state is VetAuthSuccess || state is VetRegisterSuccess) {
+          VetModel vet = (state as dynamic).vet;
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
@@ -31,7 +31,7 @@ class VetsDashboardScn extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.notifications),
                   onPressed: () {
-                    // Navigate to Notifications
+                    
                   },
                 ),
                 IconButton(
