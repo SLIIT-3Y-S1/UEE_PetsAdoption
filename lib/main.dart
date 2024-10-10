@@ -1,14 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
-<<<<<<< HEAD
-=======
-// here I want to impport firebase_options.dart from the package
-import 'package:pawpal/firebase_options.dart';
->>>>>>> 77b470d (added crud ops)
 import 'package:flutter/material.dart';
 import 'package:device_preview/device_preview.dart';
-<<<<<<< HEAD
 import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_register_scn.dart';
+import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
 import 'package:pawpal/features/vets/screens/edit_vet_profile_screen.dart';
 import 'package:pawpal/features/vets/screens/feedback_screen.dart';
 import 'package:pawpal/features/vets/screens/manage_appointment.dart';
@@ -20,21 +15,12 @@ import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
 import 'package:pawpal/features/vets/screens/vets_list_screen.dart';
 import 'firebase_options.dart';
 import 'package:pawpal/theme/theme.dart';
-=======
-import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
-// import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
->>>>>>> c6ddfcc (Created screens of Donation System)
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-<<<<<<< HEAD
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-=======
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
->>>>>>> 77b470d (added crud ops)
   runApp(
     // const MyApp(),
     DevicePreview(
@@ -52,7 +38,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'PawPal',
-<<<<<<< HEAD
         // theme: ThemeData(
         //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         //   useMaterial3: true,
@@ -60,13 +45,6 @@ class MyApp extends StatelessWidget {
         // home:  FirebaseTestPage());
 
         theme: AppTheme.lightTheme,
-        home: VetsLoginScreen());
-=======
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
         home: DonationHomeScreen());
->>>>>>> c6ddfcc (Created screens of Donation System)
   }
 }
