@@ -2,6 +2,7 @@ class AppVectors {
   static const String basePath = 'assets/vectors/';
   static const String format = '.svg';
   static const String innerPath = 'nav/';
+  static const String innerPathDrawer = 'creationDrawer/';
   
   static const String splashScreenBranding = '${basePath}SplashScreenBranding$format';
   static const String splashScreenLogo = '${basePath}SplashScreenLogo$format';
@@ -22,4 +23,12 @@ class AppVectors {
   static const String communitySpaceSelectedIcon = '$basePath${innerPath}CommunitySpaceSelectedIcon$format';
   static const String donationsSelectedIcon = '$basePath${innerPath}DonationsSelectedIcon$format';
   static const String vetSelectedIcon = '$basePath${innerPath}VetSelectedIcon$format';
+
+
+  //creation drawer icons
+  static const String newdiscuss = '$basePath${innerPathDrawer}newdiscuss$format';
+  static const String newdonation = '$basePath${innerPathDrawer}newdonation$format';
+  static const String newpost = '$basePath${innerPathDrawer}newpost$format';
+  static const String newrequest = '$basePath${innerPathDrawer}newrequest$format';
+
 }
