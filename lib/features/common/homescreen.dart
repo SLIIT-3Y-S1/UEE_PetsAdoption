@@ -41,6 +41,7 @@ class _NavigationExampleState extends State<Homescreen> {
       ][currentPageIndex],
       bottomSheet: BottomSheet(
         onClosing: () {},
+        enableDrag: false,
         builder: (BuildContext context) {
           return NavigationBar(
             onDestinationSelected: (int index) {

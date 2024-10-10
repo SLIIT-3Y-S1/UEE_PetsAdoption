@@ -4,7 +4,7 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawpal/core/data/repository/implementations/user_imp.dart';
-import 'package:pawpal/mainApp.dart';
+import 'package:pawpal/app.dart';
 import 'package:pawpal/firebase_options.dart';
 import 'package:pawpal/simple_bloc_observer.dart';
 //import 'package:pawpal/splash_screen.dart';

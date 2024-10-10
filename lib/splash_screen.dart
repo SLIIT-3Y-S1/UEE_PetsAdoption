@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pawpal/mainApp.dart';
+import 'package:pawpal/app.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
 import 'package:pawpal/core/data/repository/implementations/user_imp.dart';
 

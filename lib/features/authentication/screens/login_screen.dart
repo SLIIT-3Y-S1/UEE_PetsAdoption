@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  bool signInState = false;
+  bool signInRequired = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +32,15 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is SignInSuccess) {
             setState(() {
-              signInState = false;
+              signInRequired = false;
             });
           } else if (state is SignInProcess) {
             setState(() {
-              signInState = true;
+              signInRequired = true;
             });
           } else if (state is SignInFailure) {
             setState(() {
-              signInState = false;
+              signInRequired = false;
               // _errorMsg = 'Invalid email or password';
             });
           }
@@ -83,19 +83,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         MediumButton(
                           color: AppColors.accentYellow,
                           text: 'Login',
-                            onPressed: () {
+                          onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              context.read<SignInBloc>().add(
-                                SignInRequired(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                ),
-                                );
                               setState(() {
-                              signInState = true;
+                                context.read<SignInBloc>().add(
+                                      SignInRequired(
+                                        email: emailController.text,
+                                        password: passwordController.text,
+                                      ),
+                                    );
                               });
                             }
-                            },
+                          },
                         ),
                         const SizedBox(height: 30.0),
                         Text(
@@ -114,13 +113,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                    BlocProvider<SignUpBloc>(
-                                      create: (context) => SignUpBloc(
-                                          userRepository: context
-                                              .read<AuthenticationBloc>()
-                                              .userRepository),
-                                      child: const SignupScreen(),
-                                    )),
+                                      BlocProvider<SignUpBloc>(
+                                        create: (context) => SignUpBloc(
+                                            userRepository: context
+                                                .read<AuthenticationBloc>()
+                                                .userRepository),
+                                        child: const SignupScreen(),
+                                      )),
                             );
                           },
                           child: Text(
