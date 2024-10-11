@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:pawpal/core/services/auth_service.dart';
-import 'package:pawpal/core/services/firestore_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pawpal/core/constants/colors.dart';
+import 'package:pawpal/core/assets/app_vectors.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
+import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_register_scn.dart';
-import 'package:pawpal/features/vets/screens/feedback_screen.dart';
 import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
+import 'package:pawpal/features/common/widgets/medium_button.dart';
+import 'package:pawpal/features/auth/widgets/textfield.dart';
 
 class VetsLoginScreen extends StatefulWidget {
   const VetsLoginScreen({super.key});
@@ -14,138 +20,163 @@ class VetsLoginScreen extends StatefulWidget {
 
 class _VetsLoginScreenState extends State<VetsLoginScreen> {
   final _formKey = GlobalKey<FormState>();
-
-  // Form fields controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Function to toggle registration state
-  void _navigateToRegisterScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VetsRegisterScreen(),
-      ),
-    );
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
-  final AuthService _authService = AuthService();
-  final FirestoreService _firestoreService = FirestoreService();
-
-  void handleLogin() async {
+  void handleLogin() {
     if (_formKey.currentState!.validate()) {
-      final email = _emailController.text;
-      final password = _passwordController.text;
-      final user =
-          await _authService.signInWithEmailAndPassword(email, password);
-      if (user != null) {
-        final vet = await _firestoreService.getVetData(email);
-        if (vet != null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => VetsDashboardScn(vet: vet),
-            ),
-          );
-        }
-      } else {
-        // Show an error dialog
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: const Text('Invalid email or password'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      context
+          .read<VetAuthBloc>()
+          .add(VetAuthLoginRequested(email: email, password: password));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Veterinarian Login'),
-        backgroundColor: Theme.of(context).primaryColor,
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            const Text(
-              'Login to your Account',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+      body: BlocListener<VetAuthBloc, VetAuthState>(
+        listener: (context, state) {
+          if (state is VetAuthLoading) {
+            _showLoadingDialog(context);
+          } else if (state is VetAuthSuccess) {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const VetsDashboardScn()),
+            );
+          } else if (state is VetAuthFailure) {
+            Navigator.pop(context);
+            _showErrorSnackBar(context, state.error);
+          }
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: size.width * 0.05,
+              vertical: size.height * 0.05,
             ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty || !value.contains('@')) {
-                  return 'Please enter a valid email address';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true,
-              validator: (value) {
-                if (value == null || value.isEmpty || value.length < 6) {
-                  return 'Please enter your password';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                handleLogin();
-              },
-              child: const Text('Login'),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Don’t have an account? '),
-                GestureDetector(
-                  onTap: _navigateToRegisterScreen,
-                  child: Text(
-                    'Register here',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  SizedBox(height: size.height * 0.05),
+                  SvgPicture.asset(
+                    AppVectors.splashScreenLogo,
+                    width: size.width * 0.3,
+                    height: size.width * 0.3,
                   ),
-                ),
-              ],
+                  SizedBox(height: size.height * 0.03),
+                  const WelcomeTexts(),
+                  SizedBox(height: size.height * 0.06),
+                  CustomFormField(
+                    labelText: 'Email',
+                    controller: _emailController,
+                    hintText: 'Enter your email',
+                    obscureText: false,
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  CustomFormField(
+                    labelText: 'Password',
+                    controller: _passwordController,
+                    hintText: 'Enter your password',
+                    obscureText: true,
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  MediumButton(
+                    color: AppColors.accentYellow,
+                    text: 'Login',
+                    onPressed: handleLogin,
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  _buildRegisterSection(context),
+                ],
+              ),
             ),
-          ]),
+          ),
         ),
       ),
+    );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  Widget _buildRegisterSection(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Column(
+      children: [
+        Text(
+          'New to PawPal?',
+          style: Theme.of(context)
+              .textTheme
+              .displayMedium
+              ?.copyWith(color: Colors.black),
+        ),
+        SizedBox(height: size.height * 0.01),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const VetsRegisterScreen()),
+            );
+          },
+          child: Text(
+            'Register now',
+            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  color: AppColors.accentRed,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class WelcomeTexts extends StatelessWidget {
+  const WelcomeTexts({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Column(
+      children: [
+        Text(
+          'Welcome Veterinarian!',
+          style: Theme.of(context).textTheme.displayLarge,
+        ),
+        SizedBox(height: size.height * 0.01),
+        Text(
+          'Login to continue',
+          style: Theme.of(context).textTheme.displayMedium,
+        ),
+      ],
     );
   }
 }

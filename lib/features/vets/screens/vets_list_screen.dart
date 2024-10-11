@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pawpal/core/constants/colors.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
 import 'dart:ui';
 
-import 'package:pawpal/core/widgets/vets_widgets/vet_card.dart';
+import 'package:pawpal/features/vets/widgets/vet_card.dart';
 import 'package:pawpal/features/vets/models/vetModel.dart';
 
 class VetsListScreen extends StatefulWidget {
@@ -72,31 +73,20 @@ class _VetsListScreenState extends State<VetsListScreen> {
   // }
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return const DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Veterinarians'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                _showSearchBar(context); // Show search bar with blur effect
-              },
-            ),
+        appBar: TabBar(
+          labelColor: AppColors.black,
+          unselectedLabelColor: AppColors.grey,
+          dividerColor: Colors.white,
+          indicatorSize: TabBarIndicatorSize.label,
+          indicatorColor: AppColors.accentYellow,
+          labelStyle: TextStyle(fontSize: 14),
+          tabs: [
+            Tab(text: 'All Vets'), // First tab
+            Tab(text: 'Top Rated'), // Second tab
           ],
-          backgroundColor: Theme.of(context).primaryColor,
-          centerTitle: true,
-          bottom: const TabBar(
-            labelColor: Colors.white,
-            dividerColor: Colors.white,
-            indicatorSize: TabBarIndicatorSize.label,
-            labelStyle: TextStyle(fontSize: 14),
-            tabs: [
-              Tab(text: 'All Vets'), // First tab
-              Tab(text: 'Top Rated'), // Second tab
-            ],
-          ),
         ),
         body: const TabBarView(
           children: [
@@ -139,9 +129,7 @@ class _AllVetsTabState extends State<AllVetsTab> {
   @override
   Widget build(BuildContext context) {
     return _vetsList.isEmpty
-        ? const Center(
-            child:
-                CircularProgressIndicator()) // Show a loader while the list is loading
+        ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
             itemCount: _vetsList.length,
             itemBuilder: (context, index) {
@@ -180,15 +168,13 @@ class _TopRatedVetsTabState extends State<TopRatedVetsTab> {
   @override
   Widget build(BuildContext context) {
     return _topRatedVets.isEmpty
-        ? const Center(
-            child:
-                CircularProgressIndicator()) // Show a loader while the list is loading
+        ? const Center(child: CircularProgressIndicator())
         : ListView.builder(
             itemCount: _topRatedVets.length,
             itemBuilder: (context, index) {
               return VetCard(
                 vetModel: _topRatedVets[index],
-              ); // Same VetCard, but you can filter for top-rated vets
+              );
             },
           );
   }
