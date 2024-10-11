@@ -2,7 +2,7 @@ class AppVectors {
   static const String basePath = 'assets/vectors/';
   static const String format = '.svg';
   static const String innerPath = 'nav/';
-  static const String innerPathDrawer = 'creationDrawer/';
+  static const String innerPathDrawer = 'drawer/';
   
   static const String splashScreenBranding = '${basePath}SplashScreenBranding$format';
   static const String splashScreenLogo = '${basePath}SplashScreenLogo$format';

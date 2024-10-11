@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
@@ -11,8 +9,6 @@ import 'package:pawpal/features/discussions/screens/discussion_home_screen.dart'
 import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
 import 'package:pawpal/features/postings/screens/postings_screen.dart';
 import 'package:pawpal/features/vets/screens/vets_home_screen.dart';
-
-/// Flutter code sample for [NavigationBar].
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -28,21 +24,29 @@ class _NavigationExampleState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const HomeAppBar(),
+      appBar:
+          const HomeAppBar(), //custom top app bar - nav containing branding and user profile
 
-      /*put main component screen here*/
-
+      /* Bottom navigation bar including bottom app drawer display*/
       body: Stack(
         children: [
           [
+
+            /* Set each page content here in order :
+            - Home page,
+            - Community space,
+            -----PLACEHOLDER WIDGET----
+            - Post drawer,
+            - Donations screen
+             */
+
             //Home page
             const PostingsScreen(),
 
             //community space
             const DiscussionHomeScreen(),
 
-            //post drawer
-            DoNothingWidget(),
+            DoNothingWidget(), // This is a placeholder widget that does nothing to prevent screen change
 
             //donations screen
             const DonationHomeScreen(),
@@ -53,14 +57,15 @@ class _NavigationExampleState extends State<Homescreen> {
           ][currentPageIndex],
           if (showDialogAboveNavBar)
             Positioned(
-              bottom: 70, // Adjust this value to position the dialog above the navbar
-              left: 0,
-              right: 0,
+              bottom:
+                  85, // Adjust this value to position the dialog above the navbar
+              left: 10,
+              right: 10,
               child: Center(
                 child: Material(
                   color: Colors.transparent,
                   child: Container(
-                    padding: const EdgeInsets.all(16.0),
+                    width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8.0),
@@ -72,7 +77,8 @@ class _NavigationExampleState extends State<Homescreen> {
                         ),
                       ],
                     ),
-                    child: const Text('Overlay content here'),
+                    // OVERLAY CONTENT GOES HERE TO CHILD
+                    child: PostDrawer(),
                   ),
                 ),
               ),
@@ -92,6 +98,7 @@ class _NavigationExampleState extends State<Homescreen> {
             },
             indicatorColor: Colors.transparent,
             selectedIndex: currentPageIndex,
+            // Navigation destinations : Icons and labels
             destinations: <Widget>[
               NavigationDestination(
                 icon: SvgPicture.asset(AppVectors.homeNeutralIcon),
@@ -117,7 +124,8 @@ class _NavigationExampleState extends State<Homescreen> {
                     child: CircleAvatar(
                       radius: 30,
                       backgroundColor: ThemeData.light().colorScheme.surface,
-                      child: const Icon(Icons.add, color: AppColors.iconBlack, size: 34),
+                      child: const Icon(Icons.add,
+                          color: AppColors.iconBlack, size: 34),
                     ),
                   ),
                 ),
@@ -126,7 +134,7 @@ class _NavigationExampleState extends State<Homescreen> {
               NavigationDestination(
                 icon: SvgPicture.asset(AppVectors.donationsNeutralIcon),
                 selectedIcon:
-                    SvgPicture.asset(AppVectors.donationsSelectedIcon), 
+                    SvgPicture.asset(AppVectors.donationsSelectedIcon),
                 label: '',
               ),
               NavigationDestination(

@@ -9,7 +9,10 @@ class ProfileAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: SvgPicture.asset(AppVectors.appBarBranding),
+      title: Padding(
+        padding: const EdgeInsets.only(left: 56.0), // Adjust padding as needed
+        child: SvgPicture.asset(AppVectors.appBarBranding),
+      ),
       actions: <Widget>[
         SvgPicture.asset(
           AppVectors.profileIconActive,
