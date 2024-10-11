@@ -1,37 +1,49 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DonationService {
-  // final CollectionReference notes =
-  //     FirebaseFirestore.instance.collection('notes');
-  // Future<void> addNote(String note) {
-  //   return notes.add({
-  //     'note': note,
-  //     'timestamp': Timestamp.now(),
-  //   });
-
   final CollectionReference donations =
       FirebaseFirestore.instance.collection('donations');
 
-  // generate  code to test db
-  Future<void> generateCode() async {
-    await donations.add({
-      'title': 'Test Donation',
-      'description': 'This is a test donation',
-      'category': 'donation', // donation or request
-      'contact': 'gamithf',
-      'location': 'Kathmandu',
-    });
-  }
+  final CollectionReference openDonations =
+      FirebaseFirestore.instance.collection('openDonations');
 
-  // Create a donation
-  Future<void> addDonation(String? title, String? description, String? category,
-      String? contact, String? location) {
+  // Create a donation with image URLs
+  Future<void> addDonation(
+      String? title,
+      String? description,
+      String? category,
+      String? contact,
+      String? location,
+      bool? isUrgent,
+      List<String> imageUrls) {
     return donations.add({
       'title': title ?? '',
       'description': description ?? '',
       'category': category ?? '', // donation or request
       'contact': contact ?? '',
       'location': location ?? '',
+      'isUrgent': isUrgent ?? false,
+      'images': imageUrls, // Add image URLs
+      'timestamp': Timestamp.now(),
+    });
+  }
+
+  Future<void> addOpenDonation(
+      String? title,
+      String? description,
+      String? category,
+      String? contact,
+      String? location,
+      bool? isAvailable,
+      List<String> imageUrls) {
+    return openDonations.add({
+      'title': title ?? '',
+      'description': description ?? '',
+      'category': category ?? '', // donation or request
+      'contact': contact ?? '',
+      'location': location ?? '',
+      'isAvailable': isAvailable ?? false,
+      'images': imageUrls, // Add image URLs
       'timestamp': Timestamp.now(),
     });
   }
@@ -43,8 +55,18 @@ class DonationService {
     return donationsStream;
   }
 
-  // create a get method to get a single donation
+  Stream<QuerySnapshot> getOpenDonations() {
+    final donationsStream =
+        openDonations.orderBy('timestamp', descending: true).snapshots();
+    return donationsStream;
+  }
+
+  // Get a single donation by ID
   Future<DocumentSnapshot> getDonation(String id) {
     return donations.doc(id).get();
+  }
+
+  Future<DocumentSnapshot> getOpenDonation(String id) {
+    return openDonations.doc(id).get();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pawpal/features/donations/widgets/donation_record.dart';
+import 'package:pawpal/features/donations/widgets/open_donation_record.dart';
 
 class DonationRequestsTab extends StatelessWidget {
   @override
@@ -87,7 +88,7 @@ class OpenDonationsTab extends StatelessWidget {
           ),
         ),
         // Rest of the donation records go here (list)
-        Expanded(child: DonationRecord()),
+        Expanded(child: OpenDonationRecord()),
       ],
     );
   }
