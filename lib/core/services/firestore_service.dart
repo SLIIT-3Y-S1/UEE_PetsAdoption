@@ -183,7 +183,7 @@ class FirestoreService {
           print('Rating: $rating');
 
           // Filter vets with a rating greater than 3
-          if (rating > 3) {
+          if (rating > 3.0) {
             topRatedVets.add(VetModel.fromMap(personalInfoData));
             print('Added vet: ${vetDoc.id}');
           }

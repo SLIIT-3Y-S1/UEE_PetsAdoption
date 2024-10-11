@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawpal/core/constants/colors.dart';
-import 'package:pawpal/core/services/firestore_service.dart';
-import 'dart:ui';
-
+import 'package:pawpal/features/vets/bloc/get_all_vet_bloc/vet_bloc.dart';
+import 'package:pawpal/features/vets/bloc/get_all_vet_bloc/vet_evet.dart';
+import 'package:pawpal/features/vets/bloc/get_all_vet_bloc/vet_state.dart';
 import 'package:pawpal/features/vets/widgets/vet_card.dart';
-import 'package:pawpal/features/vets/models/vetModel.dart';
 
 class VetsListScreen extends StatefulWidget {
   const VetsListScreen({super.key});
@@ -14,84 +14,35 @@ class VetsListScreen extends StatefulWidget {
 }
 
 class _VetsListScreenState extends State<VetsListScreen> {
-  void _showSearchBar(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent, // Make background transparent
-      builder: (context) {
-        return BackdropFilter(
-          filter:
-              ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0), // Apply blur effect
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.only(
-                top: 100), // Optional: Push modal down a bit
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    hintText: 'Search vets...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Close the search bar
-                  },
-                  child: const Text('Close'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    BlocProvider.of<VetBloc>(context).add(VetListRequested());
   }
 
-  // getReview list
-  // void getReview() async {
-  //   final FirestoreService _firestoreService = FirestoreService();
-  //   List<VetModel> fetchedVets = await _firestoreService.fetchReviewsForVet();
-  //   print(fetchedVets);
-  // }
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
-        appBar: TabBar(
-          labelColor: AppColors.black,
-          unselectedLabelColor: AppColors.grey,
-          dividerColor: Colors.white,
-          indicatorSize: TabBarIndicatorSize.label,
-          indicatorColor: AppColors.accentYellow,
-          labelStyle: TextStyle(fontSize: 14),
-          tabs: [
-            Tab(text: 'All Vets'), // First tab
-            Tab(text: 'Top Rated'), // Second tab
-          ],
+        appBar: AppBar(
+          title: const Text('Vets'),
+          bottom: const TabBar(
+            labelColor: AppColors.black,
+            unselectedLabelColor: AppColors.grey,
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorColor: AppColors.accentYellow,
+            labelStyle: TextStyle(fontSize: 14),
+            tabs: [
+              Tab(text: 'All Vets'),
+              Tab(text: 'Top Rated'),
+            ],
+          ),
         ),
         body: const TabBarView(
           children: [
-            AllVetsTab(), // First tab content
-            TopRatedVetsTab(), // Second tab content
+            AllVetsTab(),
+            TopRatedVetsTab(),
           ],
         ),
       ),
@@ -99,83 +50,64 @@ class _VetsListScreenState extends State<VetsListScreen> {
   }
 }
 
-// First Tab Content (All Vets)
-class AllVetsTab extends StatefulWidget {
+class AllVetsTab extends StatelessWidget {
   const AllVetsTab({super.key});
 
   @override
-  State<AllVetsTab> createState() => _AllVetsTabState();
-}
-
-class _AllVetsTabState extends State<AllVetsTab> {
-  final FirestoreService _firestoreService = FirestoreService();
-  late List<VetModel> _vetsList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchVets(); // Fetch the vet list when the state is initialized
-  }
-
-  // Separate async method to fetch the vets list
-  Future<void> _fetchVets() async {
-    List<VetModel> fetchedVets = await _firestoreService.getVetList();
-    print(fetchedVets);
-    setState(() {
-      _vetsList = fetchedVets;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return _vetsList.isEmpty
-        ? const Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            itemCount: _vetsList.length,
+    return BlocBuilder<VetBloc, VetState>(
+      builder: (context, state) {
+        if (state is VetListLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is VetListSuccess) {
+          final vetsList = state.vetList;
+          return ListView.builder(
+            itemCount: vetsList.length,
             itemBuilder: (context, index) {
-              return VetCard(
-                  vetModel: _vetsList[
-                      index]); // Pass the current vet to the VetCard widget
+              return VetCard(vetModel: vetsList[index]);
             },
           );
+        } else if (state is VetListFailure) {
+          return Center(child: Text(state.error));
+        } else {
+          return const Center(child: Text('No data available'));
+        }
+      },
+    );
   }
 }
 
-// Second Tab Content (Top Rated Vets)
-class TopRatedVetsTab extends StatefulWidget {
+class TopRatedVetsTab extends StatelessWidget {
   const TopRatedVetsTab({super.key});
 
   @override
-  State<TopRatedVetsTab> createState() => _TopRatedVetsTabState();
-}
-
-class _TopRatedVetsTabState extends State<TopRatedVetsTab> {
-  final FirestoreService _firestoreService = FirestoreService();
-  List<VetModel> _topRatedVets = [];
-  @override
-  void initState() {
-    filterTopRatedVets();
-    super.initState();
-  }
-
-  // filter top rated vets
-  void filterTopRatedVets() async {
-    _topRatedVets = await _firestoreService.fetchTopRatedVets();
-    setState(() {});
-  }
-  // print(fetchedVets);
-
-  @override
   Widget build(BuildContext context) {
-    return _topRatedVets.isEmpty
-        ? const Center(child: CircularProgressIndicator())
-        : ListView.builder(
-            itemCount: _topRatedVets.length,
+    // Get the current vet list from the state
+    final state = BlocProvider.of<VetBloc>(context).state;
+
+    if (state is VetListSuccess) {
+      // Trigger fetching top-rated vets based on the existing vet list
+      BlocProvider.of<VetBloc>(context)
+          .add(TopRatedVetsRequested(state.vetList));
+    }
+    return BlocBuilder<VetBloc, VetState>(
+      builder: (context, state) {
+        if (state is TopRatedVetsLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is VetListSuccess && state.topRatedVets.isNotEmpty) {
+          final topRatedVets = state.topRatedVets;
+          return ListView.builder(
+            itemCount: topRatedVets.length,
             itemBuilder: (context, index) {
-              return VetCard(
-                vetModel: _topRatedVets[index],
-              );
+              return VetCard(vetModel: topRatedVets[index]);
             },
           );
+        } else if (state is TopRatedVetsFailure) {
+          return Center(child: Text(state.error));
+        } else {
+          return const Center(child: Text('No top-rated vets available'));
+        }
+      },
+    );
   }
 }

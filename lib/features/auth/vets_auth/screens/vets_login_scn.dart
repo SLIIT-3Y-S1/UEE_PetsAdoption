@@ -6,6 +6,7 @@ import 'package:pawpal/core/assets/app_vectors.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
+import 'package:pawpal/features/auth/user_auth/screens/login_screen.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_register_scn.dart';
 import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
 import 'package:pawpal/features/common/widgets/medium_button.dart';
@@ -38,6 +39,11 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
           .read<VetAuthBloc>()
           .add(VetAuthLoginRequested(email: email, password: password));
     }
+  }
+
+  void _onUserLoginPressed() {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -98,7 +104,12 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
                     text: 'Login',
                     onPressed: handleLogin,
                   ),
-                  SizedBox(height: size.height * 0.03),
+                  TextButton(
+                    onPressed: _onUserLoginPressed,
+                    child: Text('Login as a User',
+                        style: TextStyle(
+                            color: AppColors.accentYellow, fontSize: 16)),
+                  ),
                   _buildRegisterSection(context),
                 ],
               ),
@@ -131,7 +142,7 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
     return Column(
       children: [
         Text(
-          'New to PawPal?',
+          'New to pawpal?',
           style: Theme.of(context)
               .textTheme
               .displayMedium
@@ -150,7 +161,6 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
             'Register now',
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
                   color: AppColors.accentRed,
-                  fontWeight: FontWeight.bold,
                 ),
           ),
         ),

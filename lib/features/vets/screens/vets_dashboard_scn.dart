@@ -11,12 +11,14 @@ import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
 
 // ignore_for_file: prefer_const_constructors
-// ignore_for_file: avoid_unnecessary_containers
 class VetsDashboardScn extends StatelessWidget {
   const VetsDashboardScn({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return BlocBuilder<VetAuthBloc, VetAuthState>(
       builder: (context, state) {
         if (state is VetAuthSuccess || state is VetRegisterSuccess) {
@@ -30,9 +32,7 @@ class VetsDashboardScn extends StatelessWidget {
               actions: [
                 IconButton(
                   icon: const Icon(Icons.notifications),
-                  onPressed: () {
-                    
-                  },
+                  onPressed: () {},
                 ),
                 IconButton(
                   icon: const Icon(Icons.settings),
@@ -43,17 +43,19 @@ class VetsDashboardScn extends StatelessWidget {
               ],
             ),
             body: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.05,
+                  vertical: screenHeight * 0.02),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Profile Section
-                  _buildProfileSection(context, vet),
+                  _buildProfileSection(context, vet, screenWidth, screenHeight),
+                  SizedBox(height: screenHeight * 0.03),
 
-                  const SizedBox(height: 30),
                   // Quick Stats Section
-                  _buildStatsSection(),
-                  const SizedBox(height: 30),
+                  _buildStatsSection(screenHeight),
+                  SizedBox(height: screenHeight * 0.03),
 
                   // Feedback Tile
                   _buildInteractiveTile(
@@ -71,8 +73,9 @@ class VetsDashboardScn extends StatelessWidget {
                         ),
                       );
                     },
+                    screenWidth: screenWidth,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenHeight * 0.02),
 
                   // Messages Tile
                   _buildInteractiveTile(
@@ -89,8 +92,9 @@ class VetsDashboardScn extends StatelessWidget {
                         ),
                       );
                     },
+                    screenWidth: screenWidth,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenHeight * 0.02),
 
                   // Appointments Tile
                   _buildInteractiveTile(
@@ -107,8 +111,9 @@ class VetsDashboardScn extends StatelessWidget {
                         ),
                       );
                     },
+                    screenWidth: screenWidth,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: screenHeight * 0.02),
 
                   // Pet Health Records Tile
                   _buildInteractiveTile(
@@ -125,6 +130,7 @@ class VetsDashboardScn extends StatelessWidget {
                         ),
                       );
                     },
+                    screenWidth: screenWidth,
                   ),
                 ],
               ),
@@ -151,7 +157,8 @@ class VetsDashboardScn extends StatelessWidget {
   }
 
   // Profile Section
-  Widget _buildProfileSection(BuildContext context, VetModel vet) {
+  Widget _buildProfileSection(BuildContext context, VetModel vet,
+      double screenWidth, double screenHeight) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -162,7 +169,7 @@ class VetsDashboardScn extends StatelessWidget {
         );
       },
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(screenWidth * 0.05),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
@@ -178,24 +185,24 @@ class VetsDashboardScn extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              radius: 40,
+              radius: screenWidth * 0.1,
               backgroundImage: Image.network(vet.profilePicUrl).image,
             ),
-            SizedBox(width: 20),
+            SizedBox(width: screenWidth * 0.05),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Dr. ${vet.fullName}',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: screenWidth * 0.06,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
                   'Veterinarian',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: screenWidth * 0.04,
                     color: Colors.grey,
                   ),
                 ),
@@ -208,18 +215,18 @@ class VetsDashboardScn extends StatelessWidget {
   }
 
   // Stats section with charts or overview of important metrics
-  Widget _buildStatsSection() {
+  Widget _buildStatsSection(double screenHeight) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Your Performance',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: screenHeight * 0.025,
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.02),
         AspectRatio(
           aspectRatio: 1.5,
           child: BarChart(
@@ -240,21 +247,30 @@ class VetsDashboardScn extends StatelessWidget {
                   x: 2,
                   barRods: [
                     BarChartRodData(
-                        toY: 10, color: Colors.orangeAccent, width: 20.0),
+                      toY: 10,
+                      color: Colors.orangeAccent,
+                      width: 20.0,
+                    ),
                   ],
                 ),
                 BarChartGroupData(
                   x: 3,
                   barRods: [
                     BarChartRodData(
-                        toY: 14, color: Colors.greenAccent, width: 20.0),
+                      toY: 14,
+                      color: Colors.greenAccent,
+                      width: 20.0,
+                    ),
                   ],
                 ),
                 BarChartGroupData(
                   x: 4,
                   barRods: [
                     BarChartRodData(
-                        toY: 6, color: Colors.purpleAccent, width: 20.0),
+                      toY: 6,
+                      color: Colors.purpleAccent,
+                      width: 20.0,
+                    ),
                   ],
                 ),
               ],
@@ -273,6 +289,7 @@ class VetsDashboardScn extends StatelessWidget {
     required String subtitle,
     required Color color,
     required VoidCallback onTap,
+    required double screenWidth,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -289,29 +306,29 @@ class VetsDashboardScn extends StatelessWidget {
             ),
           ],
         ),
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(screenWidth * 0.05),
         child: Row(
           children: [
             CircleAvatar(
               backgroundColor: color,
               child: Icon(icon, color: Colors.white),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: screenWidth * 0.05),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 5),
+                SizedBox(height: screenWidth * 0.01),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    fontSize: 14,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.035,
                     color: Colors.grey,
                   ),
                 ),

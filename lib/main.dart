@@ -7,6 +7,7 @@ import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
 import 'package:pawpal/features/auth/user_auth/screens/login_screen.dart';
 import 'package:pawpal/features/auth/user_auth/user_auth_services/user_firebase_services.dart';
 import 'package:pawpal/features/common/screens/splash_screen.dart';
+import 'package:pawpal/features/vets/bloc/get_all_vet_bloc/vet_bloc.dart';
 
 import 'firebase_options.dart';
 import 'package:pawpal/theme/theme.dart';
@@ -26,6 +27,9 @@ void main() async {
         BlocProvider<UserAuthBloc>(
           create: (context) =>
               UserAuthBloc(AuthService(), UserFirebaseServices()),
+        ),
+        BlocProvider<VetBloc>(
+          create: (context) => VetBloc(FirestoreService()),
         ),
       ],
       child: const MyApp(),

@@ -103,7 +103,14 @@ class _VetsRegisterScreenState extends State<VetsRegisterScreen> {
     return Scaffold(
         body: BlocListener<VetAuthBloc, VetAuthState>(
             listener: (context, state) {
-              if (state is VetRegisterSuccess) {
+              if (state is VetRegisterLoading) {
+                showDialog(
+                  context: context,
+                  builder: (context) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (state is VetRegisterSuccess) {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
