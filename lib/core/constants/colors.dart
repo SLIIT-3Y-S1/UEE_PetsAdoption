@@ -10,7 +10,7 @@ class AppColors {
   static const Color accentYellow = Color.fromARGB(255, 255, 221, 110); // Yellow accent color
   static const Color accentBlue = Color.fromARGB(255, 148, 201, 231); // Blue accent color
   static const Color accentRed = Color.fromARGB(255, 243, 88, 67); // Red accent color
-  static const Color background = Color(0xFFF5F5F5); // Light Gray (for background)
+  static const Color background = Color.fromARGB(255, 255, 255, 255); // Light Gray (for background)
   static const Color textPrimary = Color.fromARGB(255, 0, 0, 0); // Black (primary text)
   static const Color textSecondary = Color.fromARGB(255, 27, 27, 27); // Dark gray (secondary text)
   static const Color iconGrey = Color.fromARGB(255, 82, 82, 82);// Non Selected Icon Colors

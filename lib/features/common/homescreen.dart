@@ -6,9 +6,9 @@ import 'package:pawpal/features/discussions/screens/discussion_home_screen.dart'
 import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
 import 'package:pawpal/features/postings/screens/postings_screen.dart';
 import 'package:pawpal/features/vets/screens/vets_list_screen.dart';
-
-
-/// Flutter code sample for [NavigationBar].
+import 'package:pawpal/core/constants/colors.dart';
+import 'package:pawpal/features/common/post_drawer.dart';
+import 'package:pawpal/features/common/return_nothing.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -19,27 +19,72 @@ class Homescreen extends StatefulWidget {
 
 class _NavigationExampleState extends State<Homescreen> {
   int currentPageIndex = 0;
+  bool showDialogAboveNavBar = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const HomeAppBar(),
+      appBar:
+          const HomeAppBar(), //custom top app bar - nav containing branding and user profile
 
-      /*put main component screen here*/
+      /* Bottom navigation bar including bottom app drawer display*/
+      body: Stack(
+        children: [
+          [
 
-      body: [
-        /// Home page
-        const PostingsScreen(),
+            /* Set each page content here in order :
+            - Home page,
+            - Community space,
+            -----PLACEHOLDER WIDGET----
+            - Post drawer,
+            - Donations screen
+             */
 
-        //community space
+            //Home page
+            const PostingsScreen(),
+
+            //community space
         const DiscussionsHomeScreen(),
 
-        //donations screen
-        const DonationHomeScreen(),
+            DoNothingWidget(), // This is a placeholder widget that does nothing to prevent screen change
 
-        //vets screen
-         const VetsListScreen(),
-      ][currentPageIndex],
+            //donations screen
+            const DonationHomeScreen(),
+
+            //vets screen
+            const VetsListScreen(),
+
+          ][currentPageIndex],
+          if (showDialogAboveNavBar)
+            Positioned(
+              bottom:
+                  85, // Adjust this value to position the dialog above the navbar
+              left: 10,
+              right: 10,
+              child: Center(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10.0,
+                          offset: Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    // OVERLAY CONTENT GOES HERE TO CHILD
+                    child: PostDrawer(),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
       bottomSheet: BottomSheet(
         onClosing: () {},
         enableDrag: false,
@@ -48,10 +93,12 @@ class _NavigationExampleState extends State<Homescreen> {
             onDestinationSelected: (int index) {
               setState(() {
                 currentPageIndex = index;
+                showDialogAboveNavBar = false;
               });
             },
             indicatorColor: Colors.transparent,
             selectedIndex: currentPageIndex,
+            // Navigation destinations : Icons and labels
             destinations: <Widget>[
               NavigationDestination(
                 icon: SvgPicture.asset(AppVectors.homeNeutralIcon),
@@ -60,17 +107,39 @@ class _NavigationExampleState extends State<Homescreen> {
               ),
               NavigationDestination(
                 icon: SvgPicture.asset(AppVectors.communitySpaceNeutralIcon),
-                selectedIcon:SvgPicture.asset(AppVectors.communitySpaceSelectedIcon),
+                selectedIcon:
+                    SvgPicture.asset(AppVectors.communitySpaceSelectedIcon),
+                label: '',
+              ),
+              NavigationDestination(
+                icon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showDialogAboveNavBar = !showDialogAboveNavBar;
+                    });
+                  },
+                  child: Material(
+                    elevation: 0.5, // Add shadow here
+                    shape: const CircleBorder(),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: ThemeData.light().colorScheme.surface,
+                      child: const Icon(Icons.add,
+                          color: AppColors.iconBlack, size: 34),
+                    ),
+                  ),
+                ),
                 label: '',
               ),
               NavigationDestination(
                 icon: SvgPicture.asset(AppVectors.donationsNeutralIcon),
-                selectedIcon:SvgPicture.asset(AppVectors.donationsSelectedIcon),
+                selectedIcon:
+                    SvgPicture.asset(AppVectors.donationsSelectedIcon),
                 label: '',
               ),
               NavigationDestination(
                 icon: SvgPicture.asset(AppVectors.vetNeutralIcon),
-                selectedIcon:SvgPicture.asset(AppVectors.vetSelectedIcon),
+                selectedIcon: SvgPicture.asset(AppVectors.vetSelectedIcon),
                 label: '',
               ),
             ],

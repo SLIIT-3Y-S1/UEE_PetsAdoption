@@ -8,9 +8,7 @@ import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
 import 'package:pawpal/features/authentication/screens/login_screen.dart';
 import 'package:pawpal/features/authentication/screens/signup_screen.dart';
 import 'package:pawpal/features/authentication/services/user_firebase_services.dart';
-
 import 'package:pawpal/features/discussions/screens/discussion_home_screen.dart';
-
 import 'firebase_options.dart';
 import 'package:pawpal/theme/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
