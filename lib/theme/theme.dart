@@ -16,6 +16,7 @@ class AppTheme {
           TextStyles.labelMedium.copyWith(color: AppColors.textSecondary),
       labelSmall:
           TextStyles.labelSmall.copyWith(color: AppColors.textSecondary),
+      bodyMedium: TextStyles.bodyMedium.copyWith(color: AppColors.textPrimary), 
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: false,

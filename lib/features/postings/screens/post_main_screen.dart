@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pawpal/core/constants/colors.dart';
+import 'package:pawpal/features/postings/screens/adoption/adoption_home_tab.dart';
+import 'package:pawpal/features/postings/screens/lostpet/lostpet_home_tab.dart';
 
 class PostingsScreen extends StatefulWidget {
   const PostingsScreen({super.key});
@@ -8,7 +10,8 @@ class PostingsScreen extends StatefulWidget {
   _PostingsScreenState createState() => _PostingsScreenState();
 }
 
-class _PostingsScreenState extends State<PostingsScreen> with SingleTickerProviderStateMixin {
+class _PostingsScreenState extends State<PostingsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _controller;
   late List<TabData> _tabData;
   late Color _activeColor;
@@ -18,15 +21,13 @@ class _PostingsScreenState extends State<PostingsScreen> with SingleTickerProvid
     super.initState();
     _tabData = [
       TabData(
-        title: 'Adoption',
-        color: AppColors.accentYellow,
-        content: Center(child: Text('Content for Adoption tab')),
-      ),
+          title: 'Adoption',
+          color: AppColors.accentYellow,
+          content: AdoptionHomeTab()),
       TabData(
-        title: 'Lost',
-        color: AppColors.accentRed,
-        content: Center(child: Text('Content for Lost tab')),
-      ),
+          title: 'Lost', 
+          color: AppColors.accentRed, 
+          content: LostPetHomeTab()),
     ];
     _activeColor = _tabData.first.color;
 
@@ -53,17 +54,21 @@ class _PostingsScreenState extends State<PostingsScreen> with SingleTickerProvid
           indicatorColor: _activeColor,
           labelPadding: EdgeInsets.zero,
           controller: _controller,
-          tabs: _tabData.map((data) => Tab(
-            child: Container(
-              constraints: BoxConstraints.expand(),
-              child: Center(
-                child: Text(
-                  data.title,
-                  style: Theme.of(context).textTheme.bodySmall, // Use text style from theme
-                ),
-              ),
-            ),
-          )).toList(),
+          tabs: _tabData
+              .map((data) => Tab(
+                    child: Container(
+                      constraints: BoxConstraints.expand(),
+                      child: Center(
+                        child: Text(
+                          data.title,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall, // Use text style from theme
+                        ),
+                      ),
+                    ),
+                  ))
+              .toList(),
         ),
         body: TabBarView(
           controller: _controller,

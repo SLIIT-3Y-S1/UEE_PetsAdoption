@@ -40,4 +40,11 @@ static final TextStyle labelLarge = GoogleFonts.fredoka(
       fontWeight: FontWeight.normal,
     ),
   );
+
+    static final TextStyle bodyMedium = GoogleFonts.fredoka(
+    textStyle: const TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.normal,
+    ),
+  );
 }

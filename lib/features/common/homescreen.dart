@@ -4,7 +4,7 @@ import 'package:pawpal/core/assets/app_vectors.dart';
 import 'package:pawpal/features/common/home_appbar.dart';
 import 'package:pawpal/features/discussions/screens/discussion_home_screen.dart';
 import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
-import 'package:pawpal/features/postings/screens/postings_screen.dart';
+import 'package:pawpal/features/postings/screens/post_main_screen.dart';
 import 'package:pawpal/features/vets/screens/vets_list_screen.dart';
 import 'package:pawpal/core/constants/colors.dart';
 import 'package:pawpal/features/common/post_drawer.dart';
