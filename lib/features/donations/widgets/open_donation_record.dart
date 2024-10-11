@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pawpal/features/donations/service/donation_service.dart';
+import 'package:pawpal/features/donations/services/donation_service.dart';
 
 class OpenDonationRecord extends StatelessWidget {
   final DonationService donationService = DonationService();
