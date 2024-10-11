@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pawpal/features/donations/services/donation_service.dart';
+import 'package:pawpal/features/donations/service/donation_service.dart';
 
-class DonationRecord extends StatelessWidget {
+class OpenDonationRecord extends StatelessWidget {
   final DonationService donationService = DonationService();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('donations').snapshots(),
+      stream:
+          FirebaseFirestore.instance.collection('openDonations').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -28,7 +29,7 @@ class DonationRecord extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return FutureBuilder<DocumentSnapshot>(
-                      future: donationService.getDonation(donationId),
+                      future: donationService.getOpenDonation(donationId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -77,9 +78,11 @@ class DonationRecord extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      data['isUrgent'] == true ? 'Urgent' : '',
+                                      data['isAvailable'] == true
+                                          ? 'Available'
+                                          : '',
                                       style: TextStyle(
-                                        color: Colors.red,
+                                        color: Colors.green,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -150,9 +153,9 @@ class DonationRecord extends StatelessWidget {
                         donation['location'] ?? 'No location',
                       ),
                       Text(
-                        donation['isUrgent'] == true ? 'Urgent' : '',
+                        donation['isAvailable'] == true ? 'Available' : '',
                         style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
+                            color: Colors.green, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

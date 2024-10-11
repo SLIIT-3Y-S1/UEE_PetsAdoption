@@ -1,32 +1,28 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // For picking images
-import 'package:pawpal/features/donations/screens/donation_home_screen.dart';
-import 'dart:io';
-import 'package:pawpal/features/donations/services/donation_service.dart'; // For File class
-import 'dart:io'; // For File class
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data'; // For Uint8List
 import 'dart:io'; // For File (not used on web)
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart'; // For file storage
 import 'package:path/path.dart'; // For file paths
+import 'package:pawpal/features/donations/service/donation_service.dart';
 
 import 'donation_home_screen.dart';
 
-class DonationRequestForm extends StatefulWidget {
+class OpenDonationForm extends StatefulWidget {
   @override
-  _DonationRequestFormState createState() => _DonationRequestFormState();
+  _OpenDonationFormState createState() => _OpenDonationFormState();
 }
 
-class _DonationRequestFormState extends State<DonationRequestForm> {
+class _OpenDonationFormState extends State<OpenDonationForm> {
   final DonationService donationService = DonationService();
   final _formKey = GlobalKey<FormState>();
 
   String? _title;
   String? _category;
   String? _description;
-  bool _isUrgent = false;
+  bool _isAvailable = true;
   String? _contact;
   String? _location;
   List<Uint8List?> _imageBytes = []; // For web
@@ -90,7 +86,7 @@ class _DonationRequestFormState extends State<DonationRequestForm> {
     try {
       Reference storageReference = FirebaseStorage.instance
           .ref()
-          .child('donations/${DateTime.now().millisecondsSinceEpoch}');
+          .child('openDonations/${DateTime.now().millisecondsSinceEpoch}');
 
       UploadTask uploadTask;
       SettableMetadata metadata;
@@ -141,13 +137,13 @@ class _DonationRequestFormState extends State<DonationRequestForm> {
 
       // print(imageUrls);
       // Add donation details to Firestore
-      donationService.addDonation(
+      donationService.addOpenDonation(
         _title,
         _description,
         _category,
         _contact,
         _location,
-        _isUrgent,
+        _isAvailable,
         imageUrls,
       );
 
@@ -266,12 +262,12 @@ class _DonationRequestFormState extends State<DonationRequestForm> {
               // Urgency checkbox
               Row(
                 children: [
-                  Text("Is this request urgent?"),
+                  Text("Is this available?"),
                   Checkbox(
-                    value: _isUrgent,
+                    value: _isAvailable,
                     onChanged: (value) {
                       setState(() {
-                        _isUrgent = value!;
+                        _isAvailable = value!;
                       });
                     },
                   ),

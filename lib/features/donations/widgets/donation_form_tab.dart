@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pawpal/features/donations/screens/donation_open_form.dart';
 import 'package:pawpal/features/donations/screens/donation_request_form.dart';
 
 class DonationFormRequestsTab extends StatelessWidget {
@@ -19,7 +20,7 @@ class OpenDonationsFormTab extends StatelessWidget {
     return Column(
       children: [
         // Rest of the donation records go here (list)
-        Expanded(child: DonationRequestForm()),
+        Expanded(child: OpenDonationForm()),
       ],
     );
   }

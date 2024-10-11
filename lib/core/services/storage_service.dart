@@ -53,4 +53,52 @@ class StorageService {
       return null;
     }
   }
+
+  Future<String?> uploadDonationImage(File imageFile, String donationId) async {
+    try {
+      // Define the storage path
+      String storagePath = 'donations/$donationId/donation_image';
+
+      // Upload the file to Firebase Storage
+      Reference ref = FirebaseStorage.instance.ref().child(storagePath);
+      UploadTask uploadTask = ref.putFile(imageFile);
+
+      // Wait for the upload to complete
+      TaskSnapshot snapshot = await uploadTask;
+
+      // Get the download URL
+      String downloadURL = await snapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  Future<String?> uploadDonationImageWeb(
+      XFile imageFile, String donationId) async {
+    try {
+      // Convert image to bytes for web upload
+      final Uint8List imageBytes = await imageFile.readAsBytes();
+
+      // Create a reference in Firebase Storage
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('donations')
+          .child(donationId)
+          .child('donation_image');
+
+      // Upload image bytes to Firebase Storage
+      final uploadTask = storageRef.putData(imageBytes);
+
+      // Wait for the upload to complete and get the download URL
+      final TaskSnapshot taskSnapshot = await uploadTask;
+      final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      return downloadUrl; // Return the download URL
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
 }
