@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'discussion_home_screen.dart';
+import 'package:pawpal/core/services/firestore_service.dart';
+import '../models/discussion.dart';
 
 class NewDiscussionPage extends StatefulWidget {
   const NewDiscussionPage({super.key});
@@ -19,6 +21,41 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  // Function to handle submission
+  Future<void> _submitDiscussion() async {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
+      // Show an error message if fields are empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    // Create a DiscussionModel instance without userId
+    final discussion = DiscussionModel.createDiscussion(
+      title: _titleController.text,
+      description: _descriptionController.text,
+    );
+
+    // Add discussion to Firestore
+    await FirestoreService().addDiscussionToFirestore(discussion);
+
+    // Clear the text fields after submission
+    _titleController.clear();
+    _descriptionController.clear();
+    _charCount = 0;
+
+    // Navigate back or show a success message
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const DiscussionsHomeScreen()),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Discussion added successfully')),
+    );
   }
 
   @override
@@ -82,9 +119,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
             const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  // Handle form submission
-                },
+                onPressed: _submitDiscussion, // Call the submit function
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.amber[600], // Matching button color
                 ),
@@ -95,51 +130,51 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-      currentIndex: 1, // Set the default selected index
-      showUnselectedLabels: false, // Hide labels for unselected items
-      showSelectedLabels: false, // Hide labels for selected items
-      type: BottomNavigationBarType.fixed, // Ensures equal spacing
-      items: [
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/adopt.png', 
-            width: 32.25, // Updated size
-            height: 32.25,
+        currentIndex: 1, // Set the default selected index
+        showUnselectedLabels: false, // Hide labels for unselected items
+        showSelectedLabels: false, // Hide labels for selected items
+        type: BottomNavigationBarType.fixed, // Ensures equal spacing
+        items: [
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/adopt.png',
+              width: 32.25, // Updated size
+              height: 32.25,
+            ),
+            label: '', // Empty label
           ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/discussion.png',
-            width: 32.25, // Updated size
-            height: 32.25,
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/discussion.png',
+              width: 32.25, // Updated size
+              height: 32.25,
+            ),
+            label: '', // Empty label
           ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/add.png',
-            width: 32.25, // Updated size
-            height: 32.25,
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/add.png',
+              width: 32.25, // Updated size
+              height: 32.25,
+            ),
+            label: '', // Empty label
           ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/donation.png',
-            width: 32.25, // Updated size
-            height: 32.25,
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/donation.png',
+              width: 32.25, // Updated size
+              height: 32.25,
+            ),
+            label: '', // Empty label
           ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/vet.png',
-            width: 32.25, // Updated size
-            height: 32.25,
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/vet.png',
+              width: 32.25, // Updated size
+              height: 32.25,
+            ),
+            label: '', // Empty label
           ),
-          label: '', // Empty label
-        ),
         ],
         onTap: (index) {
           switch (index) {
@@ -154,7 +189,6 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
               break;
             case 2:
               // Navigate to My Discussions Screen
-              
               break;
             case 3:
               // Navigate to the donation screen (replace with your screen)
@@ -167,10 +201,4 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: NewDiscussionPage(),
-  ));
 }
