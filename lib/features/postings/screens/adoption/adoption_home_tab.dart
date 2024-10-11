@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pawpal/core/constants/colors.dart';
 import 'package:pawpal/features/common/widgets/small_button.dart';
+import 'package:pawpal/features/postings/screens/adoption/adoption_post_list.dart';
 import 'package:pawpal/theme/theme.dart';
-
 
 class AdoptionHomeTab extends StatefulWidget {
   @override
@@ -27,11 +27,11 @@ class _AdoptionHomeTabState extends State<AdoptionHomeTab> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Search By Keywords',
                     suffixIcon: Icon(Icons.search),
                   ).applyDefaults(Theme.of(context).inputDecorationTheme),
-                  style: AppTheme.lightTheme.textTheme.bodyMedium,
+                  style: AppTheme.lightTheme.textTheme.bodySmall,
                   onSubmitted: (value) {
                     // Handle search
                   },
@@ -49,8 +49,8 @@ class _AdoptionHomeTabState extends State<AdoptionHomeTab> {
             child: Wrap(
               spacing: 10.0, // Space between tabs
               children: [
-                _buildTabButton(context, 'Tab 1', 0),
-                _buildTabButton(context, 'Tab 2', 1),
+                _buildTabButton(context, 'All', 0),
+                _buildTabButton(context, 'Most Recent', 1),
               ],
             ),
           ),
@@ -67,11 +67,14 @@ class _AdoptionHomeTabState extends State<AdoptionHomeTab> {
   Widget _buildTabButton(BuildContext context, String title, int index) {
     bool isSelected = _selectedTabIndex == index;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add padding here
+      padding: const EdgeInsets.symmetric(
+          horizontal: 20.0, vertical: 10.0), // Add padding here
       child: TextButton(
         style: TextButton.styleFrom(
           foregroundColor: isSelected ? Colors.white : Colors.black,
-          backgroundColor: isSelected ? Colors.blue : Colors.transparent,
+          backgroundColor:
+              isSelected ? AppColors.accentBlue : Colors.transparent,
+          textStyle: AppTheme.lightTheme.textTheme.bodySmall,
         ),
         onPressed: () {
           setState(() {
@@ -86,7 +89,7 @@ class _AdoptionHomeTabState extends State<AdoptionHomeTab> {
   Widget _buildTabContent() {
     switch (_selectedTabIndex) {
       case 0:
-        return Text('Content for Tab 1');
+        return AllAdoptionPosts();
       case 1:
         return Text('Content for Tab 2');
       default:
@@ -94,3 +97,4 @@ class _AdoptionHomeTabState extends State<AdoptionHomeTab> {
     }
   }
 }
+

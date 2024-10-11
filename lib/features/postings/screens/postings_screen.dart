@@ -50,6 +50,7 @@ class _PostingsScreenState extends State<PostingsScreen>
     return Theme(
       data: ThemeData(primaryColor: _activeColor),
       child: Scaffold(
+        //backgroundColor: Colors.white,
         appBar: TabBar(
           indicatorColor: _activeColor,
           labelPadding: EdgeInsets.zero,

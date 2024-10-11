@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
+import 'package:pawpal/features/postings/screens/post_creation_screen.dart';
 import 'package:pawpal/theme/theme.dart';
 
 class PostDrawer extends StatelessWidget {
@@ -42,6 +43,11 @@ class PostDrawer extends StatelessWidget {
           switch (index) {
             case 0:
               // Handle New Post tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const PostCreationScreen()),
+              );
               break;
             case 1:
               // Handle New Discuss tap
