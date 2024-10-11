@@ -27,9 +27,6 @@ class DonationRequestsTab extends StatelessWidget {
               ),
               SizedBox(width: 10),
               ElevatedButton.icon(
-                onPressed: () {
-                  // Implement filter functionality
-                },
                 icon: Icon(Icons.filter_list),
                 label: Text('Filter'),
                 style: ElevatedButton.styleFrom(
@@ -37,6 +34,34 @@ class DonationRequestsTab extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            leading: Icon(Icons.priority_high),
+                            title: Text('Urgent'),
+                            onTap: () {
+                              // Implement urgent filter functionality
+                              Navigator.pop(context);
+                            },
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.access_time),
+                            title: Text('Recent'),
+                            onTap: () {
+                              // Implement recent filter functionality
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ],
           ),

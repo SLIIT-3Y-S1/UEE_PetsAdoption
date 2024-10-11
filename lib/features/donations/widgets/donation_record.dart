@@ -53,63 +53,161 @@ class DonationRecord extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Container(
-                            padding: EdgeInsets.all(16),
-                            height: 500, // Adjust height as needed
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Display images with swiping functionality if more than one image exists
-                                imageUrls.isNotEmpty
-                                    ? _buildImageSwiper(imageUrls)
-                                    : Text('No valid image available'),
-                                SizedBox(height: 16),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      data['title'] ?? 'No title available',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    Text(
-                                      data['isUrgent'] == true ? 'Urgent' : '',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Text(data['category'] ??
-                                    'No category available'),
-                                SizedBox(height: 8),
-                                Text(data['location'] ??
-                                    'No category available'),
-                                SizedBox(height: 8),
+                          child: Stack(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(16),
+                                height: MediaQuery.of(context).size.height *
+                                    0.8, // 80% of screen height
+                                width: MediaQuery.of(context).size.width *
+                                    0.9, // 90% of screen width
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Swiping images if more than one
+                                      imageUrls.isNotEmpty
+                                          ? _buildImageSwiper(imageUrls)
+                                          : Text('No valid image available'),
+                                      SizedBox(height: 16),
 
-                                SizedBox(height: 8),
-                                Text(
-                                    'Description: ${data['description'] ?? 'No description available'}'),
-                                SizedBox(height: 8),
-                                Text(
-                                    'Contact: ${data['contact'] ?? 'No contact available'}'),
-                                Spacer(),
-                                Center(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('Close'),
+                                      // Poster information and clickable user profile
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              // Handle user profile click
+                                              print('User profile clicked');
+                                            },
+                                            child: Text(
+                                              'Posted: @${data['contact'] ?? 'Unknown'}',
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+
+                                      // Donation title
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            data['title'] ??
+                                                'No title available',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 24,
+                                            ),
+                                          ),
+                                          Text(
+                                            data['isUrgent'] == true
+                                                ? 'Urgent'
+                                                : 'Not Urgent',
+                                            style: TextStyle(
+                                              color: data['isUrgent'] == true
+                                                  ? Colors.red
+                                                  : Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+
+                                      // Date and Category
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          _buildDetailItem(
+                                              label: 'Date',
+                                              value: _formatTimestamp(
+                                                  data['timestamp'])),
+                                          _buildDetailItem(
+                                              label: 'Category',
+                                              value: data['category'] ??
+                                                  'No category available'),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8),
+
+                                      // Location
+                                      Row(
+                                        children: [
+                                          Icon(Icons.location_on,
+                                              color: Colors.blue),
+                                          Text(
+                                            data['location'] ??
+                                                'No location available',
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: 18, // Bigger font size
+                                              fontWeight:
+                                                  FontWeight.bold, // Bold font
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 16),
+
+                                      // About section
+                                      Text('About',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold)),
+                                      Text(
+                                        data['description'] ??
+                                            'No description available',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                      SizedBox(height: 16),
+
+                                      // Contact information
+                                      // Contact button
+                                      SizedBox(height: 32),
+                                      Center(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.red, // Background color
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 32, vertical: 16),
+                                          ),
+                                          onPressed: () {
+                                            // Handle contact action
+                                          },
+                                          child: Text(
+                                            'Donate',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              Positioned(
+                                right: 0.0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -150,14 +248,26 @@ class DonationRecord extends StatelessWidget {
                         donation['location'] ?? 'No location',
                       ),
                       Text(
-                        donation['isUrgent'] == true ? 'Urgent' : '',
+                        donation['isUrgent'] == true ? 'Urgent' : 'Not Urgent',
                         style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold),
+                          color: donation['isUrgent'] == true
+                              ? Colors.red
+                              : Colors.green, // Change color for 'Not urgent'
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
-                  trailing:
-                      Text('Contact: ${donation['contact'] ?? 'No contact'}'),
+                  trailing: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end, // Align to bottom
+                    children: [
+                      Text(
+                        'Date: ${_formatTimestamp(donation['timestamp'])}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -238,6 +348,26 @@ class DonationRecord extends StatelessWidget {
             );
           },
         ),
+      ],
+    );
+  }
+
+  // Format timestamp to a readable date string
+  String _formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+  }
+
+  // Build detail item widget
+  Widget _buildDetailItem({required String label, required String value}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(value),
       ],
     );
   }
