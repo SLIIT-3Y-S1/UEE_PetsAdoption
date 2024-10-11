@@ -83,7 +83,7 @@ class DonationRecord extends StatelessWidget {
                                               print('User profile clicked');
                                             },
                                             child: Text(
-                                              'Posted: @${data['contact'] ?? 'Unknown'}',
+                                              'Posted: @${data['user'] ?? 'Unknown'}',
                                               style: TextStyle(
                                                 color: Colors.blue,
                                               ),
@@ -168,6 +168,7 @@ class DonationRecord extends StatelessWidget {
                                             'No description available',
                                         style: TextStyle(fontSize: 16),
                                       ),
+
                                       SizedBox(height: 16),
 
                                       // Contact information
@@ -182,7 +183,63 @@ class DonationRecord extends StatelessWidget {
                                                 horizontal: 32, vertical: 16),
                                           ),
                                           onPressed: () {
-                                            // Handle contact action
+                                            // I want to display a pop up dialog with data['contact']
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                  ),
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(16),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                          'Contact Information',
+                                                          style: TextStyle(
+                                                            fontSize: 24,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 16),
+                                                        Text(
+                                                          data['contact'] ??
+                                                              'No contact information',
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 16),
+                                                        ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text(
+                                                            'Close',
+                                                            style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
                                           },
                                           child: Text(
                                             'Donate',

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // Make sure to import flutter_bloc
 import 'package:pawpal/core/constants/colors.dart';
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart';
 import 'package:pawpal/features/donations/screens/donation_form_screen.dart';
 import 'package:pawpal/features/donations/widgets/donations_home_tab.dart';
+import 'package:pawpal/models/user_model.dart'; // Import your UserModel
 
 class DonationHomeScreen extends StatefulWidget {
   @override
@@ -55,7 +59,7 @@ class _DonationHomeScreenState extends State<DonationHomeScreen>
     });
   }
 
-// Method to show filter bottom sheet
+  // Method to show filter bottom sheet
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -158,6 +162,27 @@ class _DonationHomeScreenState extends State<DonationHomeScreen>
               controller: _tabController,
               children: [DonationRequestsTab(), OpenDonationsTab()],
             ),
+          ),
+          BlocBuilder<UserAuthBloc, UserAuthState>(
+            builder: (context, state) {
+              if (state is UserAuthLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (state is UserAuthSuccess) {
+                UserModel user = state.user;
+                print('Logged in as: ${user.username}');
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Logged in as: ${user.username}'),
+                );
+              } else if (state is UserAuthFailure) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Error: ${state.error}'),
+                );
+              } else {
+                return Container();
+              }
+            },
           ),
         ],
       ),

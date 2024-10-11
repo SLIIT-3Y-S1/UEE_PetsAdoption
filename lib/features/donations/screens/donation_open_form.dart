@@ -1,11 +1,15 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data'; // For Uint8List
 import 'dart:io'; // For File (not used on web)
 import 'package:firebase_storage/firebase_storage.dart'; // For file storage
 import 'package:path/path.dart'; // For file paths
-import 'package:pawpal/features/donations/service/donation_service.dart';
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart';
+import 'package:pawpal/features/donations/services/donation_service.dart';
+import 'package:pawpal/models/user_model.dart';
 
 import 'donation_home_screen.dart';
 
@@ -24,6 +28,8 @@ class _OpenDonationFormState extends State<OpenDonationForm> {
   bool _isAvailable = true;
   String? _contact;
   String? _location;
+  String? _user;
+  String? _useremail;
   List<Uint8List?> _imageBytes = []; // For web
   List<File> _images = []; // For mobile
 
@@ -140,9 +146,10 @@ class _OpenDonationFormState extends State<OpenDonationForm> {
         _title,
         _description,
         _category,
-        _contact,
+        _useremail,
         _location,
         _isAvailable,
+        _user,
         imageUrls,
       );
 
@@ -162,6 +169,30 @@ class _OpenDonationFormState extends State<OpenDonationForm> {
           key: _formKey,
           child: ListView(
             children: [
+              BlocBuilder<UserAuthBloc, UserAuthState>(
+                builder: (context, state) {
+                  if (state is UserAuthLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is UserAuthSuccess) {
+                    UserModel user = state.user;
+                    print('Logged in as: ${user.username}');
+                    _useremail = user.email; // Set _contact to user.email
+                    _user =
+                        user.username; // Assign username to a separate variable
+                    // Assign username to a separate variable
+                    return Container();
+                    // padding: const EdgeInsets.all(8.0),
+                    // child: Text('Logged in as: ${user.username}, ${user.email}'),
+                  } else if (state is UserAuthFailure) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Error: ${state.error}'),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
               // Title input field
               TextFormField(
                 decoration: InputDecoration(

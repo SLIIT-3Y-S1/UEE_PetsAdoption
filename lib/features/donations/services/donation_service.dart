@@ -15,6 +15,7 @@ class DonationService {
       String? contact,
       String? location,
       bool? isUrgent,
+      String? user,
       List<String> imageUrls) {
     return donations.add({
       'title': title ?? '',
@@ -24,6 +25,7 @@ class DonationService {
       'location': location ?? '',
       'isUrgent': isUrgent ?? false,
       'images': imageUrls, // Add image URLs
+      'user': user, // Add image URLs
       'timestamp': Timestamp.now(),
     });
   }
@@ -35,6 +37,7 @@ class DonationService {
       String? contact,
       String? location,
       bool? isAvailable,
+      String? user,
       List<String> imageUrls) {
     return openDonations.add({
       'title': title ?? '',
@@ -43,7 +46,8 @@ class DonationService {
       'contact': contact ?? '',
       'location': location ?? '',
       'isAvailable': isAvailable ?? false,
-      'images': imageUrls, // Add image URLs
+      'images': imageUrls,
+      'user': user, // Add image URLs
       'timestamp': Timestamp.now(),
     });
   }
