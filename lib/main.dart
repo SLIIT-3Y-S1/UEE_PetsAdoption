@@ -8,7 +8,6 @@ import 'package:pawpal/features/auth/user_auth/screens/login_screen.dart';
 import 'package:pawpal/features/auth/user_auth/user_auth_services/user_firebase_services.dart';
 import 'package:pawpal/features/common/screens/splash_screen.dart';
 
-
 import 'firebase_options.dart';
 import 'package:pawpal/theme/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
