@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data'; // For Uint8List
 import 'dart:io'; // For File (not used on web)
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart'; // For file storage
 import 'package:path/path.dart'; // For file paths
 import 'package:pawpal/features/donations/service/donation_service.dart';
