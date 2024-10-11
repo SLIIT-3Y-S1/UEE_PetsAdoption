@@ -94,77 +94,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-      currentIndex: 1, // Set the default selected index
-      showUnselectedLabels: false, // Hide labels for unselected items
-      showSelectedLabels: false, // Hide labels for selected items
-      type: BottomNavigationBarType.fixed, // Ensures equal spacing
-      items: [
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/adopt.png', 
-            width: 32.25, // Updated size
-            height: 32.25,
-          ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/discussion.png',
-            width: 32.25, // Updated size
-            height: 32.25,
-          ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/add.png',
-            width: 32.25, // Updated size
-            height: 32.25,
-          ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/donation.png',
-            width: 32.25, // Updated size
-            height: 32.25,
-          ),
-          label: '', // Empty label
-        ),
-        BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/icons/vet.png',
-            width: 32.25, // Updated size
-            height: 32.25,
-          ),
-          label: '', // Empty label
-        ),
-        ],
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              // Navigate to the adopt screen (replace with your screen)
-              break;
-            case 1:
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DiscussionsHomeScreen()),
-              );
-              break;
-            case 2:
-              // Navigate to My Discussions Screen
-              
-              break;
-            case 3:
-              // Navigate to the donation screen (replace with your screen)
-              break;
-            case 4:
-              // Navigate to the vet screen (replace with your screen)
-              break;
-          }
-        },
-      ),
+      
     );
   }
 }

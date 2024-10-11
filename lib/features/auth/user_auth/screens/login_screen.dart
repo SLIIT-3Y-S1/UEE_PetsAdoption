@@ -1,43 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pawpal/core/constants/colors.dart';
-import 'package:pawpal/core/assets/app_vectors.dart';
-import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
-import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
-import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
-import 'package:pawpal/features/auth/vets_auth/screens/vets_register_scn.dart';
-import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
-import 'package:pawpal/features/common/widgets/medium_button.dart';
-import 'package:pawpal/features/auth/widgets/textfield.dart';
 
-class VetsLoginScreen extends StatefulWidget {
-  const VetsLoginScreen({super.key});
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_event.dart';
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart';
+
+import 'package:pawpal/features/auth/user_auth/screens/signup_screen.dart';
+import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
+import 'package:pawpal/features/auth/widgets/textfield.dart';
+import 'package:pawpal/features/common/screens/homescreen.dart';
+
+import 'package:pawpal/features/common/widgets/medium_button.dart';
+import 'package:pawpal/core/assets/app_vectors.dart';
+import 'package:pawpal/core/constants/colors.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  _VetsLoginScreenState createState() => _VetsLoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _VetsLoginScreenState extends State<VetsLoginScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
-  void handleLogin() {
+  void _onLoginPressed() {
     if (_formKey.currentState!.validate()) {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
       context
-          .read<VetAuthBloc>()
-          .add(VetAuthLoginRequested(email: email, password: password));
+          .read<UserAuthBloc>()
+          .add(UserAuthLoginRequested(email: email, password: password));
     }
+  }
+
+  void _onVetLoginPressed() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const VetsLoginScreen()),
+    );
   }
 
   @override
@@ -45,17 +56,17 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: BlocListener<VetAuthBloc, VetAuthState>(
+      body: BlocListener<UserAuthBloc, UserAuthState>(
         listener: (context, state) {
-          if (state is VetAuthLoading) {
+          if (state is UserAuthLoading) {
             _showLoadingDialog(context);
-          } else if (state is VetAuthSuccess) {
+          } else if (state is UserAuthSuccess) {
             Navigator.pop(context);
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const VetsDashboardScn()),
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
             );
-          } else if (state is VetAuthFailure) {
+          } else if (state is UserAuthFailure) {
             Navigator.pop(context);
             _showErrorSnackBar(context, state.error);
           }
@@ -81,14 +92,14 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
                   SizedBox(height: size.height * 0.06),
                   CustomFormField(
                     labelText: 'Email',
-                    controller: _emailController,
+                    controller: emailController,
                     hintText: 'Enter your email',
                     obscureText: false,
                   ),
                   SizedBox(height: size.height * 0.03),
                   CustomFormField(
                     labelText: 'Password',
-                    controller: _passwordController,
+                    controller: passwordController,
                     hintText: 'Enter your password',
                     obscureText: true,
                   ),
@@ -96,9 +107,16 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
                   MediumButton(
                     color: AppColors.accentYellow,
                     text: 'Login',
-                    onPressed: handleLogin,
+                    onPressed: _onLoginPressed,
                   ),
-                  SizedBox(height: size.height * 0.03),
+                  // SizedBox(height: size.height * 0.03),
+                  TextButton(
+                    onPressed: _onVetLoginPressed,
+                    child: Text('Login as a Vet',
+                        style: TextStyle(
+                            color: AppColors.accentYellow, fontSize: 16)),
+                  ),
+                  // SizedBox(height: size.height * 0.03),
                   _buildRegisterSection(context),
                 ],
               ),
@@ -125,38 +143,35 @@ class _VetsLoginScreenState extends State<VetsLoginScreen> {
       ),
     );
   }
+}
 
-  Widget _buildRegisterSection(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        Text(
-          'New to PawPal?',
-          style: Theme.of(context)
-              .textTheme
-              .displayMedium
-              ?.copyWith(color: Colors.black),
+Widget _buildRegisterSection(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  return Column(
+    children: [
+      Text(
+        'New to pawpal?',
+        style: Theme.of(context).textTheme.displayMedium?.copyWith(
+              color: Colors.black,
+            ),
+      ),
+      SizedBox(height: size.height * 0.01),
+      GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SignupScreen()),
+          );
+        },
+        child: Text(
+          'Register now',
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                color: AppColors.accentRed,
+              ),
         ),
-        SizedBox(height: size.height * 0.01),
-        GestureDetector(
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const VetsRegisterScreen()),
-            );
-          },
-          child: Text(
-            'Register now',
-            style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  color: AppColors.accentRed,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 class WelcomeTexts extends StatelessWidget {
@@ -168,12 +183,12 @@ class WelcomeTexts extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Welcome Veterinarian!',
+          'Welcome!',
           style: Theme.of(context).textTheme.displayLarge,
         ),
         SizedBox(height: size.height * 0.01),
         Text(
-          'Login to continue',
+          'Glad to see you again!',
           style: Theme.of(context).textTheme.displayMedium,
         ),
       ],

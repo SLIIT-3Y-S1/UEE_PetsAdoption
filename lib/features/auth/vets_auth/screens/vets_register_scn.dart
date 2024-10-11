@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:pawpal/core/constants/colors.dart';
+import 'package:pawpal/core/assets/app_vectors.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
-import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
-import 'package:pawpal/features/vets/models/vetModel.dart';
+import 'package:pawpal/features/auth/widgets/textfield.dart';
+import 'package:pawpal/features/auth/widgets/welcome_widget.dart';
+import 'package:pawpal/features/common/widgets/medium_button.dart';
 import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
+import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
 
 class VetsRegisterScreen extends StatefulWidget {
   const VetsRegisterScreen({super.key});
@@ -95,251 +100,270 @@ class _VetsRegisterScreenState extends State<VetsRegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Veterinarian Registration'),
-        centerTitle: true,
-      ),
-      body: BlocListener<VetAuthBloc, VetAuthState>(
-        listener: (context, state) {
-          if (state is VetRegisterSuccess) {
-            // Navigate to dashboard on successful registration
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const VetsDashboardScn()),
-              (route) => false,
-            );
-          } else if (state is VetRegisterFailure) {
-            // Show error message
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.error)));
-          }
-        },
-        child: BlocBuilder<VetAuthBloc, VetAuthState>(
-          builder: (context, state) {
-            if (state is VetRegisterLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    final size = MediaQuery.of(context).size;
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Form(
-                    key: _formKey,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height -
-                          kToolbarHeight,
-                      child: PageView(
-                        controller: _pageController,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  'Step 1: Basic Information',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+    return Scaffold(
+        body: BlocListener<VetAuthBloc, VetAuthState>(
+            listener: (context, state) {
+              if (state is VetRegisterSuccess) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const VetsDashboardScn()),
+                  (route) => false,
+                );
+              } else if (state is VetRegisterFailure) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.error)));
+              }
+            },
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: size.width * 0.05,
+                  vertical: size.height * 0.05,
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      SizedBox(height: size.height * 0.05),
+                      SvgPicture.asset(
+                        AppVectors.splashScreenLogo,
+                        width: size.width * 0.3,
+                        height: size.width * 0.3,
+                      ),
+                      SizedBox(height: size.height * 0.03),
+                      const WelcomeWidget(),
+                      SizedBox(height: size.height * 0.03),
+                      SizedBox(
+                        height:
+                            MediaQuery.of(context).size.height - kToolbarHeight,
+                        child: PageView(
+                          controller: _pageController,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  const Text(
+                                    'Step 1: Basic Information',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                    label: 'Full Name',
-                                    controller: _nameController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your full name';
-                                      }
-                                      return null;
-                                    }),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                    label: 'Email',
-                                    controller: _emailController,
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                      label: 'Full Name',
+                                      controller: _nameController,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter your full name';
+                                        }
+                                        return null;
+                                      }),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                      label: 'Email',
+                                      controller: _emailController,
+                                      validator: (value) {
+                                        if (value == null ||
+                                            !value.contains('@')) {
+                                          return 'Please enter a valid email address';
+                                        }
+                                        return null;
+                                      }),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                      label: 'Phone Number',
+                                      controller: _phoneController,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter your phone number';
+                                        }
+                                        return null;
+                                      }),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                    label: 'Password',
+                                    controller: _passwordController,
+                                    obscureText: true,
                                     validator: (value) {
                                       if (value == null ||
-                                          !value.contains('@')) {
-                                        return 'Please enter a valid email address';
+                                          value.isEmpty ||
+                                          value.length < 6) {
+                                        return 'Please enter a password with at least 6 characters';
                                       }
                                       return null;
-                                    }),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                    label: 'Phone Number',
-                                    controller: _phoneController,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter your phone number';
-                                      }
-                                      return null;
-                                    }),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                  label: 'Password',
-                                  controller: _passwordController,
-                                  obscureText: true,
-                                  validator: (value) {
-                                    if (value == null ||
-                                        value.isEmpty ||
-                                        value.length < 6) {
-                                      return 'Please enter a password with at least 6 characters';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                  label: 'Confirm Password',
-                                  controller: _confirmPasswordController,
-                                  obscureText: true,
-                                  validator: (value) {
-                                    if (value !=
-                                        _passwordController.text) {
-                                      return 'Passwords do not match';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 10),
-                                ElevatedButton(
-                                  onPressed: _nextPage,
-                                  child: const Text('Next'),
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text('Already have an account? '),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const VetsLoginScreen()));
-                                      },
-                                      child: const Text(
-                                        'Login here',
-                                        style: TextStyle(
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  'Step 2: Additional Information',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                                    },
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                    label: 'Current Clinic Name',
-                                    controller: _currentClinicNameController),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                    label: 'Clinic Location',
-                                    controller: _clinicLocationController),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                    label: 'NIC Number',
-                                    controller: _nicController),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                    label: 'Veterinarian License Number',
-                                    controller: _vetLicenseNoController),
-                                const SizedBox(height: 10),
-                                _buildTextField(
-                                  label: 'License Issue Date',
-                                  controller: _licenseIssueDateController,
-                                  readOnly: true,
-                                  onTap: () => _selectDate(context),
-                                ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _pageController.previousPage(
-                                          duration: const Duration(
-                                              milliseconds: 500),
-                                          curve: Curves.easeInOut,
-                                        );
-                                      },
-                                      child: const Text('Back'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () =>
-                                          _handleRegistration(context),
-                                      child: const Text('Register'),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                    label: 'Confirm Password',
+                                    controller: _confirmPasswordController,
+                                    obscureText: true,
+                                    validator: (value) {
+                                      if (value != _passwordController.text) {
+                                        return 'Passwords do not match';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                  ElevatedButton(
+                                    onPressed: _nextPage,
+                                    child: const Text('Next'),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _buildLoginSection(context),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  const Text(
+                                    'Step 2: Additional Information',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                      label: 'Current Clinic Name',
+                                      controller: _currentClinicNameController),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                      label: 'Clinic Location',
+                                      controller: _clinicLocationController),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                      label: 'NIC Number',
+                                      controller: _nicController),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                      label: 'Veterinarian License Number',
+                                      controller: _vetLicenseNoController),
+                                  const SizedBox(height: 10),
+                                  _buildTextField(
+                                    label: 'License Issue Date',
+                                    controller: _licenseIssueDateController,
+                                    readOnly: true,
+                                    onTap: () => _selectDate(context),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          _pageController.previousPage(
+                                            duration: const Duration(
+                                                milliseconds: 500),
+                                            curve: Curves.easeInOut,
+                                          );
+                                        },
+                                        child: const Text('Back'),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () =>
+                                            _handleRegistration(context),
+                                        child: const Text('Register'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
+            )));
+  }
+
+  Widget _buildLoginSection(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Already have an account?',
+          style: Theme.of(context)
+              .textTheme
+              .displayMedium
+              ?.copyWith(color: Colors.black),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const VetsLoginScreen()),
             );
           },
+          child: Text(
+            'Login here',
+            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  color: AppColors.accentRed,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
         ),
-      ),
+      ],
     );
   }
+}
 
-  // Helper method to create text fields
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    String? Function(String?)? validator,
-    bool obscureText = false,
-    VoidCallback? onTap,
-    bool readOnly = false,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      readOnly: readOnly,
-      validator: validator,
-      onTap: onTap,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-      ),
-    );
-  }
+class WelcomeTexts extends StatelessWidget {
+  const WelcomeTexts({super.key});
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _nicController.dispose();
-    _vetLicenseNoController.dispose();
-    _licenseIssueDateController.dispose();
-    _currentClinicNameController.dispose();
-    _clinicLocationController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Join Us!',
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                color: AppColors.accentRed,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        Text(
+          'Create your vet account.',
+          style: Theme.of(context)
+              .textTheme
+              .displayMedium
+              ?.copyWith(color: Colors.black),
+        ),
+      ],
+    );
   }
+}
+
+// Helper method to create text fields
+Widget _buildTextField({
+  required String label,
+  required TextEditingController controller,
+  String? Function(String?)? validator,
+  bool obscureText = false,
+  VoidCallback? onTap,
+  bool readOnly = false,
+}) {
+  return TextFormField(
+    controller: controller,
+    obscureText: obscureText,
+    readOnly: readOnly,
+    validator: validator,
+    onTap: onTap,
+    decoration: InputDecoration(
+      labelText: label,
+      border: const OutlineInputBorder(),
+    ),
+  );
 }

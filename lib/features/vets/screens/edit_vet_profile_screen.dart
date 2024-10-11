@@ -47,6 +47,25 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Assuming you are using Bloc and accessing the vet data from Bloc state
+    final vetState = BlocProvider.of<VetAuthBloc>(context).state;
+
+    if (vetState is VetAuthSuccess || vetState is VetRegisterSuccess) {
+      // Casting the state to access vet data
+      VetModel vet = (vetState as dynamic).vet;
+
+      // Print the vet data in initState
+      print("Vet Data on Init:");
+      print("Name: ${vet!.fullName}");
+      print("Email: ${vet!.email}");
+      print("Profile Picture URL: ${vet!.services}");
+    }
+  }
+
   void handelSaveBtn(VetModel vet) {
     print(personalDetails);
     print(services);
@@ -92,10 +111,10 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
       ),
       body: BlocBuilder<VetAuthBloc, VetAuthState>(
         builder: (context, state) {
-          if (state is VetAuthLoading) {
+          if (state is VetAuthLoading || state is VetRegisterLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is VetAuthSuccess) {
-            final vet = state.vet;
+          } else if (state is VetAuthSuccess || state is VetRegisterSuccess) {
+            final VetModel vet = (state as dynamic).vet;
             personalDetails = [
               vet.fullName,
               vet.phone,
@@ -119,9 +138,14 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
                 ],
               ),
             );
-          } else if (state is VetAuthFailure) {
-            return Center(child: Text('Error: ${state.error}'));
+          } else if (state is VetAuthFailure || state is VetRegisterFailure) {
+            final errorMessage = state is VetAuthFailure
+                ? (state).error
+                : (state as VetRegisterFailure).error;
+
+            return Center(child: Text('Error: $errorMessage'));
           }
+
           return const Center(child: Text('Unknown state'));
         },
       ),
@@ -176,7 +200,7 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Personal Details',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
@@ -210,7 +234,7 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
           children: [
             Row(
               children: [
-                Text(
+                const Text(
                   'Services Provided',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),

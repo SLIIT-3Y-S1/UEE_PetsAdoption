@@ -4,12 +4,10 @@ import 'package:pawpal/core/services/auth_service.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
 import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
-import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
-import 'package:pawpal/features/authentication/screens/login_screen.dart';
-import 'package:pawpal/features/authentication/screens/signup_screen.dart';
-import 'package:pawpal/features/authentication/services/user_firebase_services.dart';
+import 'package:pawpal/features/auth/user_auth/screens/login_screen.dart';
+import 'package:pawpal/features/auth/user_auth/user_auth_services/user_firebase_services.dart';
+import 'package:pawpal/features/common/screens/splash_screen.dart';
 
-import 'package:pawpal/features/discussions/screens/discussion_home_screen.dart';
 
 import 'firebase_options.dart';
 import 'package:pawpal/theme/theme.dart';
@@ -31,7 +29,7 @@ void main() async {
               UserAuthBloc(AuthService(), UserFirebaseServices()),
         ),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -43,13 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'PawPal',
-        // theme: ThemeData(
-        //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        //   useMaterial3: true,
-        // ),
-        // home:  FirebaseTestPage());
-
         theme: AppTheme.lightTheme,
-        home: VetsLoginScreen());
+        home: const SplashScreen());
   }
 }

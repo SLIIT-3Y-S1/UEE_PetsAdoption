@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:pawpal/core/services/auth_service.dart';
 import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_event.dart';
 import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart';
-import 'package:pawpal/features/authentication/services/user_firebase_services.dart';
+import 'package:pawpal/features/auth/user_auth/user_auth_services/user_firebase_services.dart';
 import 'package:pawpal/models/user_model.dart';
 
 class UserAuthBloc extends Bloc<UserAuthEvent, UserAuthState> {

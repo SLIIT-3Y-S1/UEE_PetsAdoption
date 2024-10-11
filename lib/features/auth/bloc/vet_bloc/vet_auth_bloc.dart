@@ -6,7 +6,6 @@ import 'package:pawpal/features/vets/models/vetModel.dart';
 import 'vet_auth_event.dart';
 import 'vet_auth_state.dart';
 
-
 class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
   final AuthService _authService;
   final FirestoreService _firestoreService;
@@ -18,8 +17,8 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
       emit(VetAuthLoading());
       try {
         final user = await _authService.signInWithEmailAndPassword(
-          event.email, event.password);
-        
+            event.email, event.password);
+
         if (user != null) {
           final VetModel? vet = await _firestoreService.getVetData(event.email);
           if (vet != null) {
@@ -34,13 +33,13 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
         emit(VetAuthFailure('Login failed: $e'));
       }
     });
-  // vet register request handler
+    // vet register request handler
     on<VetAuthRegisterRequested>((event, emit) async {
       emit(VetRegisterLoading());
       try {
         final user = await _authService.signUpWithEmailAndPassword(
-          event.email, event.password);
-        
+            event.email, event.password);
+
         if (user != null) {
           final VetModel newVet = VetModel(
             email: event.email,
@@ -52,9 +51,14 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
             clinicName: event.clinicName,
             issueDate: event.issueDate,
           );
-          
-          final VetModel? savedVet = await _firestoreService.addVetToFirestore(newVet);
-          
+
+          final VetModel? savedVet =
+              await _firestoreService.addVetToFirestore(newVet);
+
+          print('Saved vet: ${savedVet?.services}');
+          print('Saved vet: ${savedVet?.nic}');
+          print('Saved vet: ${savedVet?.bio}');
+
           if (savedVet != null) {
             emit(VetRegisterSuccess(savedVet));
           } else {
@@ -66,12 +70,11 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
       }
     });
 
-
     // Update vet details event handler
     on<UpdateVetDetails>((event, emit) {
       if (state is VetAuthSuccess) {
         final currentState = state as VetAuthSuccess;
-        
+
         // Create an updated VetModel
         final updatedVet = currentState.vet.copyWith(
           fullName: event.updatedPersonalDetails[0],
@@ -79,7 +82,7 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
           clinicLocation: event.updatedPersonalDetails[2],
           bio: event.updatedPersonalDetails[3],
         );
-        
+
         // Emit a new state with the updated VetModel
         emit(VetAuthSuccess(updatedVet));
       }
