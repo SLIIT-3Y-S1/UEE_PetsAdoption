@@ -44,7 +44,7 @@ class _DonationHomeScreenState extends State<DonationHomeScreen>
       filteredRequestDonation = requestDonation
           .where((donation) =>
               donation['title'].toLowerCase().contains(query) ||
-              donation['description'].toLowerCase().contains(query))
+              donation['isUrgent'].toLowerCase().contains(query))
           .toList();
 
       filteredOpenDonation = openDonation
