@@ -10,6 +10,7 @@ import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart';
 
 import 'package:pawpal/features/authentication/screens/signup_screen.dart';
 import 'package:pawpal/features/authentication/textfield.dart';
+import 'package:pawpal/features/common/homescreen.dart';
 import 'package:pawpal/features/pet_posts/screens/pet_post_home_screeen.dart';
 import 'package:pawpal/widgets/common/medium_button.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    PetPostHomeScreen(), // Navigate to the home screen after successful login
+                    Homescreen(), // Navigate to the home screen after successful login
               ),
             );
           } else if (state is UserAuthFailure) {

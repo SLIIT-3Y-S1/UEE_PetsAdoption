@@ -50,6 +50,6 @@ class MyApp extends StatelessWidget {
         // home:  FirebaseTestPage());
 
         theme: AppTheme.lightTheme,
-        home: VetsLoginScreen());
+        home: LoginScreen());
   }
 }
