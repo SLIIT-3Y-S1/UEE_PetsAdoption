@@ -5,7 +5,7 @@ class VetModel {
   final String clinicLocation;
   final String nic;
   final String vetLicenseNo;
-  final DateTime issueDate;
+  DateTime? issueDate;
   final String clinicName;
   final String bio;
   final String profilePicUrl;
@@ -16,16 +16,35 @@ class VetModel {
     required this.fullName,
     required this.email,
     required this.phone,
-    required this.clinicName,
+    this.clinicName = '',
     required this.clinicLocation,
-    required this.nic,
-    required this.vetLicenseNo,
-    required this.issueDate,
+    this.nic = '',
+    this.vetLicenseNo = '',
+    DateTime? issueDate,
     this.bio = 'Bio here, this is my bio details',
     this.profilePicUrl = '',
     this.services = const ['Vaccination', 'Surgery', 'Dental Care'],
     this.rating = 0.0, // default rating is 0.0
   });
+  VetModel copyWith({
+    String? fullName,
+    String? phone,
+    String? clinicLocation,
+    String? bio,
+    List<dynamic>? services,
+    String? email,
+    String? profilePicUrl,
+  }) {
+    return VetModel(
+      fullName: fullName ?? this.fullName,
+      phone: phone ?? this.phone,
+      clinicLocation: clinicLocation ?? this.clinicLocation,
+      bio: bio ?? this.bio,
+      services: services ?? this.services,
+      email: email ?? this.email,
+      profilePicUrl: profilePicUrl ?? this.profilePicUrl,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -36,7 +55,7 @@ class VetModel {
       'clinicLocation': clinicLocation,
       'nic': nic,
       'vetLicenseNo': vetLicenseNo,
-      'issueDate': issueDate.toIso8601String(),
+      'issueDate': issueDate?.toIso8601String(),
       'bio': bio,
       'profilePicUrl': profilePicUrl,
       'services': services,
