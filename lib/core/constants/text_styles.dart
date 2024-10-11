@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 class TextStyles {
   static final TextStyle headlineLarge = GoogleFonts.fredoka(
     textStyle: const TextStyle(
@@ -13,11 +14,13 @@ class TextStyles {
       fontWeight: FontWeight.normal,
     ),
   );
+
+  static final TextStyle labelLarge = GoogleFonts.fredoka(
+    textStyle: const TextStyle(fontSize: 28.0, fontWeight: FontWeight.normal),
+  );
+
   static final TextStyle labelMedium = GoogleFonts.fredoka(
-    textStyle: const TextStyle(
-      fontSize: 14.0,
-      fontWeight: FontWeight.w100
-    ),
+    textStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w100),
   );
   static final TextStyle labelSmall = GoogleFonts.fredoka(
     textStyle: const TextStyle(
@@ -25,7 +28,12 @@ class TextStyles {
       fontWeight: FontWeight.w100,
     ),
   );
-  
+  static final TextStyle bodyMedium = GoogleFonts.fredoka(
+    textStyle: const TextStyle(
+      fontSize: 20.0,
+      fontWeight: FontWeight.normal,
+    ),
+  );
   static final TextStyle bodySmall = GoogleFonts.fredoka(
     textStyle: const TextStyle(
       fontSize: 14.0,
