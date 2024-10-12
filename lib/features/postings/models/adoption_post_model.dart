@@ -1,37 +1,48 @@
 class AdoptionPostModel {
-  final String userid;
+  final String email;
   final String palname;
-  final String animeType;
+  final String gender;
+  final String animalType;
   final String breed;
   final String imageUrl;
   final double age;
   final double weight;
+  final String description;
   final String isVaccinated;
   final String isTrained;
   final int contactNumber;
-  final String location;
-  final String description;
+  final String city;
+  final String address;
+  final String availability;
+  final DateTime timestamp;
+  //final String postid;
 
   AdoptionPostModel({
-    required this.userid,
+    required this.email,
     required this.palname,
-    required this.animeType,
+    required this.gender,
+    required this.animalType,
     required this.breed,
     required this.imageUrl,
     required this.age,
     required this.weight,
+    required this.description,
     required this.isVaccinated,
     required this.isTrained,
     required this.contactNumber,
-    required this.location,
-    required this.description,
+    required this.city,
+    required this.address,
+    required this.timestamp,
+    //required this.postid,
+    this.availability = 'Available',
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'userid': userid,
+      'email': email,
       'palname': palname,
-      'animeType': animeType,
+      'gender':gender,
+      'animeType': animalType,
       'breed': breed,
       'imageUrl': imageUrl,
       'age': age,
@@ -39,16 +50,21 @@ class AdoptionPostModel {
       'isVaccinated': isVaccinated,
       'isTrained': isTrained,
       'contactNumber': contactNumber,
-      'location': location,
+      'city': city,
+      'address': address,
       'description': description,
+      'timestamp': timestamp,
+      'availability': availability,
+      //'postid': postid,
     };
   }
 
   factory AdoptionPostModel.fromMap(Map<String, dynamic> map) {
     return AdoptionPostModel(
-      userid: map['userid'] ?? '',
+      email: map['email'] ?? '',
       palname: map['palname'] ?? '',
-      animeType: map['animeType'] ?? '',
+      gender: map['gender'] ?? '',
+      animalType: map['animalType'] ?? '',
       breed: map['breed'] ?? '',
       imageUrl: map['imageUrl'] ?? '',
       age: map['age']?.toDouble() ?? 0.0,
@@ -56,41 +72,50 @@ class AdoptionPostModel {
       isVaccinated: map['isVaccinated'] ?? '',
       isTrained: map['isTrained'] ?? '',
       contactNumber: map['contactNumber'] ?? 0,
-      location: map['location'] ?? '',
+      city: map['city'] ?? '',
+      address: map['address'] ?? '',
       description: map['description'] ?? '',
+      timestamp: map['timestamp'] ?? '',
+      availability: map['availability'] ?? '',
+      //postid: map['postid'] ?? '',
     );
   }
 
   AdoptionPostModel copyWith({
-    String? userid,
+    String? email,
     String? palname,
+    String? gender,
     String? animeType,
     String? breed,
     String? imageUrl,
     double? age,
     double? weight,
+    String? description,
     String? isVaccinated,
     String? isTrained,
     int? contactNumber,
-    String? location,
-    String? description,
+    String? city,
+    String? address,
+    String? availability,
   }) {
     return AdoptionPostModel(
-      userid: userid ?? this.userid,
+      email: email ?? this.email,
       palname: palname ?? this.palname,
-      animeType: animeType ?? this.animeType,
+      gender: gender ?? this.gender,
+      animalType: animeType ?? this.animalType,
       breed: breed ?? this.breed,
       imageUrl: imageUrl ?? this.imageUrl,
       age: age ?? this.age,
       weight: weight ?? this.weight,
+      description: description ?? this.description,
       isVaccinated: isVaccinated ?? this.isVaccinated,
       isTrained: isTrained ?? this.isTrained,
       contactNumber: contactNumber ?? this.contactNumber,
-      location: location ?? this.location,
-      description: description ?? this.description,
+      city: city ?? this.city,
+      address: address ?? this.address,
+      availability: availability ?? this.availability,
+      timestamp: timestamp,
+      //postid: postid,
     );
   }
-
-
-  
 }
