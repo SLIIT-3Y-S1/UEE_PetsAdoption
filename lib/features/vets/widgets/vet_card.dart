@@ -46,30 +46,29 @@ class _VetCardState extends State<VetCard> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return VetProfileScreen(
-              vetModel: widget.vetModel);
+          return VetProfileScreen(vetModel: widget.vetModel);
         }));
       },
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 25),
           child: Center(
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children: [
                     CircleAvatar(
-                      radius: 40,
+                      radius: 20,
                       backgroundImage:
                           Image.network(widget.vetModel.profilePicUrl).image,
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Dr.${widget.vetModel.fullName}',
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             )),
                         const SizedBox(height: 5),
@@ -84,14 +83,15 @@ class _VetCardState extends State<VetCard> {
                                 Text(widget.vetModel.clinicLocation),
                               ],
                             ),
-                            const SizedBox(width: 20),
+                            const SizedBox(width: 10),
                             Row(
                               children: [
                                 const Icon(
                                   Icons.star,
                                   color: Colors.yellow,
                                 ),
-                                Text('${widget.vetModel.rating}'),
+                                Text('${widget.vetModel.rating}',
+                                    style: const TextStyle(fontSize: 16)),
                               ],
                             ),
                           ],

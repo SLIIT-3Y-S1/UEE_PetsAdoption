@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pawpal/core/constants/colors.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
+import 'package:pawpal/features/vets/bloc/get_all_vet_bloc/vet_bloc.dart';
+import 'package:pawpal/features/vets/bloc/get_all_vet_bloc/vet_evet.dart';
 import 'package:pawpal/features/vets/models/reviewModel.dart';
 import 'package:pawpal/features/vets/models/vetModel.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -122,6 +126,8 @@ class _VetProfileScreenState extends State<VetProfileScreen> {
     // Update vet's rating
     await _firestoreService.updateRatingForVet(
         widget.vetModel.email, agvRating);
+
+    BlocProvider.of<VetBloc>(context).add(VetListRequested());
     Navigator.of(context).pop(); // Close dialog after submission
   }
 
@@ -142,8 +148,8 @@ class _VetProfileScreenState extends State<VetProfileScreen> {
     final PageController pageController = PageController();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.vetModel.fullName),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: Text("Veterinarian Profile"),
+        backgroundColor: AppColors.accentYellow,
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -153,7 +159,7 @@ class _VetProfileScreenState extends State<VetProfileScreen> {
             // Profile Section
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              color: Colors.blueAccent,
+              color: AppColors.accentYellow,
               child: Column(
                 children: [
                   // Profile Picture
@@ -169,7 +175,7 @@ class _VetProfileScreenState extends State<VetProfileScreen> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.grey,
                     ),
                   ),
                   // Specialization
@@ -177,7 +183,7 @@ class _VetProfileScreenState extends State<VetProfileScreen> {
                     'Veterinary Surgeon',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white70,
+                      color: AppColors.iconGrey,
                     ),
                   ),
                   SizedBox(height: 10),
@@ -187,11 +193,11 @@ class _VetProfileScreenState extends State<VetProfileScreen> {
                     children: [
                       Icon(Icons.location_on, color: Colors.white),
                       Text(widget.vetModel.clinicLocation,
-                          style: TextStyle(color: Colors.white)),
+                          style: TextStyle(color: AppColors.grey)),
                       SizedBox(width: 20),
-                      Icon(Icons.star, color: Colors.yellow),
+                      Icon(Icons.star, color: AppColors.white),
                       Text('${widget.vetModel.rating}',
-                          style: TextStyle(color: Colors.white)),
+                          style: TextStyle(color: AppColors.grey)),
                     ],
                   ),
                 ],
@@ -273,7 +279,7 @@ class _VetProfileScreenState extends State<VetProfileScreen> {
                       label: const Text('Message',
                           style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
+                        backgroundColor: AppColors.accentYellow,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                     ),
