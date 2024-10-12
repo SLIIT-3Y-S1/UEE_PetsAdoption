@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pawpal/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:pawpal/core/services/auth_service.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
 import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
-import 'package:pawpal/features/auth/user_auth/screens/login_screen.dart';
 import 'package:pawpal/features/auth/user_auth/user_auth_services/user_firebase_services.dart';
 import 'package:pawpal/features/common/screens/splash_screen.dart';
 import 'package:pawpal/features/vets/bloc/get_all_vet_bloc/vet_bloc.dart';

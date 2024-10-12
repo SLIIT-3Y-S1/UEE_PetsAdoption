@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pawpal/features/donations/services/donation_service.dart';
 
-class DonationRecord extends StatelessWidget {
+class OpenDonationRecord extends StatelessWidget {
   final DonationService donationService = DonationService();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('donations').snapshots(),
+      stream:
+          FirebaseFirestore.instance.collection('openDonations').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -28,7 +29,7 @@ class DonationRecord extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return FutureBuilder<DocumentSnapshot>(
-                      future: donationService.getDonation(donationId),
+                      future: donationService.getOpenDonation(donationId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -107,11 +108,11 @@ class DonationRecord extends StatelessWidget {
                                             ),
                                           ),
                                           Text(
-                                            data['isUrgent'] == true
-                                                ? 'Urgent'
-                                                : 'Not Urgent',
+                                            data['isAvailable'] == true
+                                                ? 'Available'
+                                                : 'Not Available',
                                             style: TextStyle(
-                                              color: data['isUrgent'] == true
+                                              color: data['isAvailable'] == true
                                                   ? Colors.red
                                                   : Colors.green,
                                               fontWeight: FontWeight.bold,
@@ -183,7 +184,6 @@ class DonationRecord extends StatelessWidget {
                                                 horizontal: 32, vertical: 16),
                                           ),
                                           onPressed: () {
-                                            // I want to display a pop up dialog with data['contact']
                                             showDialog(
                                               context: context,
                                               builder: (context) {
@@ -242,7 +242,7 @@ class DonationRecord extends StatelessWidget {
                                             );
                                           },
                                           child: Text(
-                                            'Donate',
+                                            'Contact',
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
@@ -305,20 +305,19 @@ class DonationRecord extends StatelessWidget {
                         donation['location'] ?? 'No location',
                       ),
                       Text(
-                        donation['isUrgent'] == true ? 'Urgent' : 'Not Urgent',
+                        donation['isAvailable'] == true ? 'Available' : '',
                         style: TextStyle(
-                          color: donation['isUrgent'] == true
-                              ? Colors.red
-                              : Colors.green, // Change color for 'Not urgent'
-                          fontWeight: FontWeight.bold,
-                        ),
+                            color: Colors.green, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                   trailing: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end, // Align to bottom
                     children: [
+                      // Text(
+                      //   'Contact: ${donation['contact'] ?? 'No contact'}',
+                      //   style: TextStyle(fontWeight: FontWeight.bold),
+                      // ),
                       Text(
                         'Date: ${_formatTimestamp(donation['timestamp'])}',
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -409,29 +408,36 @@ class DonationRecord extends StatelessWidget {
     );
   }
 
-  // Format timestamp to a readable date string
   String _formatTimestamp(Timestamp timestamp) {
     DateTime dateTime = timestamp.toDate();
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 
-  // Build detail item widget
+  // Temporarily always return true for valid image URLs
+  bool _isValidImageUrl(String url) {
+    return true; // Implement your validation logic if needed
+  }
+
+  // Method to build detail item
   Widget _buildDetailItem({required String label, required String value}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
         ),
-        Text(value),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
       ],
     );
-  }
-
-  // Temporarily always return true for valid image URLs
-  bool _isValidImageUrl(String url) {
-    return true; // Implement your validation logic if needed
   }
 
   // Get the valid image URLs or return an empty list if no valid URLs
