@@ -21,7 +21,7 @@ class SmallButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
-        minimumSize: const Size(100, 50), // Set the size here
+        minimumSize: const Size(100, 40), // Set the size here
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),
