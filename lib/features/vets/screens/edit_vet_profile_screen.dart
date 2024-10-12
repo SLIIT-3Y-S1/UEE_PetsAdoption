@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pawpal/core/constants/colors.dart';
 import 'package:pawpal/core/services/firestore_service.dart';
 import 'package:pawpal/core/services/storage_service.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
+import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
 import 'package:pawpal/features/vets/models/vetModel.dart';
 
 class EditVetProfileScreen extends StatefulWidget {
@@ -57,18 +59,12 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
     if (vetState is VetAuthSuccess || vetState is VetRegisterSuccess) {
       // Casting the state to access vet data
       VetModel vet = (vetState as dynamic).vet;
-
-      // Print the vet data in initState
-      print("Vet Data on Init:");
-      print("Name: ${vet!.fullName}");
-      print("Email: ${vet!.email}");
-      print("Profile Picture URL: ${vet!.services}");
     }
   }
 
   void handelSaveBtn(VetModel vet) {
-    print(personalDetails);
-    print(services);
+    // print(personalDetails);
+    // print(services);
 
     _firestoreService.updateVetData(
       email: vet.email,
@@ -77,6 +73,15 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
       clinicLocation: personalDetails[2],
       bio: personalDetails[3],
       services: services,
+    );
+    BlocProvider.of<VetAuthBloc>(context).add(RefreshVetData(vet.email));
+  }
+
+  void _logoutHandelr() {
+    BlocProvider.of<VetAuthBloc>(context).add(VetAuthLogoutRequested());
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const VetsLoginScreen()),
     );
   }
 
@@ -309,6 +314,13 @@ class _EditVetProfileScreenState extends State<EditVetProfileScreen> {
               onChanged: (bool value) {
                 setState(() {});
               },
+            ),
+            ElevatedButton(
+              onPressed: _logoutHandelr,
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: AppColors.accentRed),
+              ),
             ),
           ],
         ),

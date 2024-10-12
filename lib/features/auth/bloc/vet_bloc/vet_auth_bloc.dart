@@ -33,7 +33,8 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
         emit(VetAuthFailure('Login failed: $e'));
       }
     });
-    // vet register request handler
+
+    // Register request handler
     on<VetAuthRegisterRequested>((event, emit) async {
       emit(VetRegisterLoading());
       try {
@@ -54,10 +55,6 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
 
           final VetModel? savedVet =
               await _firestoreService.addVetToFirestore(newVet);
-
-          print('Saved vet: ${savedVet?.services}');
-          print('Saved vet: ${savedVet?.nic}');
-          print('Saved vet: ${savedVet?.bio}');
 
           if (savedVet != null) {
             emit(VetRegisterSuccess(savedVet));
@@ -87,5 +84,27 @@ class VetAuthBloc extends Bloc<VetAuthEvent, VetAuthState> {
         emit(VetAuthSuccess(updatedVet));
       }
     });
+
+    // **NEW: Refresh vet data handler**
+    on<RefreshVetData>((event, emit) async {
+      try {
+        final VetModel? updatedVet =
+            await _firestoreService.getVetData(event.email);
+        if (updatedVet != null) {
+          emit(VetAuthSuccess(updatedVet));
+        } else {
+          emit(VetAuthFailure('Failed to refresh vet data'));
+        }
+      } catch (e) {
+        emit(VetAuthFailure('Error refreshing data: $e'));
+      }
+    });
+
+    // Logout request handler
+    on<VetAuthLogoutRequested>((event, emit) async {
+      await _authService.signOut();
+      emit(VetAuthInitial());
+    });
+    
   }
 }

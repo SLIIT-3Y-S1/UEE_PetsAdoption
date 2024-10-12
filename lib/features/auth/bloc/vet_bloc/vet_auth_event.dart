@@ -40,3 +40,11 @@ class UpdateVetDetails extends VetAuthEvent {
   final List<String> updatedPersonalDetails;
   UpdateVetDetails(this.updatedPersonalDetails);
 }
+
+// refresh data---------------
+class RefreshVetData extends VetAuthEvent {
+  final String email;
+  RefreshVetData(this.email);
+}
+
+

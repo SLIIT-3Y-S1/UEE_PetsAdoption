@@ -7,9 +7,7 @@ import 'package:pawpal/core/assets/app_vectors.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_bloc.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_event.dart';
 import 'package:pawpal/features/auth/bloc/vet_bloc/vet_auth_state.dart';
-import 'package:pawpal/features/auth/widgets/textfield.dart';
 import 'package:pawpal/features/auth/widgets/welcome_widget.dart';
-import 'package:pawpal/features/common/widgets/medium_button.dart';
 import 'package:pawpal/features/vets/screens/vets_dashboard_scn.dart';
 import 'package:pawpal/features/auth/vets_auth/screens/vets_login_scn.dart';
 
@@ -104,7 +102,14 @@ class _VetsRegisterScreenState extends State<VetsRegisterScreen> {
     return Scaffold(
         body: BlocListener<VetAuthBloc, VetAuthState>(
             listener: (context, state) {
-              if (state is VetRegisterSuccess) {
+              if (state is VetRegisterLoading) {
+                showDialog(
+                  context: context,
+                  builder: (context) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (state is VetRegisterSuccess) {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
@@ -211,9 +216,28 @@ class _VetsRegisterScreenState extends State<VetsRegisterScreen> {
                                     },
                                   ),
                                   const SizedBox(height: 10),
-                                  ElevatedButton(
-                                    onPressed: _nextPage,
-                                    child: const Text('Next'),
+                                  SizedBox(
+                                    width: 120, // Set the desired width
+                                    height: 40, // Set the desired height
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: AppColors.white,
+                                        backgroundColor: AppColors.accentYellow,
+                                        shadowColor: AppColors.secondary,
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32.0),
+                                        ),
+                                      ),
+                                      onPressed: _nextPage,
+                                      child: const Text(
+                                        'Next',
+                                        style: TextStyle(
+                                            color: AppColors.black,
+                                            fontSize: 18),
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(height: 10),
                                   _buildLoginSection(context),
@@ -259,21 +283,51 @@ class _VetsRegisterScreenState extends State<VetsRegisterScreen> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          _pageController.previousPage(
-                                            duration: const Duration(
-                                                milliseconds: 500),
-                                            curve: Curves.easeInOut,
-                                          );
-                                        },
-                                        child: const Text('Back'),
+                                      SizedBox(
+                                        width: 120, // Set the desired width
+                                        height: 40, // Set the desired height
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: AppColors.black,
+                                            backgroundColor:
+                                                AppColors.accentYellow,
+                                            shadowColor: AppColors.secondary,
+                                            elevation: 3,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(32.0),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            _pageController.previousPage(
+                                              duration: const Duration(
+                                                  milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            );
+                                          },
+                                          child: const Text('Back'),
+                                        ),
                                       ),
-                                      ElevatedButton(
-                                        onPressed: () =>
-                                            _handleRegistration(context),
-                                        child: const Text('Register'),
-                                      ),
+                                      SizedBox(
+                                        width: 120, // Set the desired width
+                                        height: 40, // Set the desired height
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: AppColors.black,
+                                            backgroundColor:
+                                                AppColors.accentYellow,
+                                            shadowColor: AppColors.secondary,
+                                            elevation: 3,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(32.0),
+                                            ),
+                                          ),
+                                          onPressed: () =>
+                                              _handleRegistration(context),
+                                          child: const Text('Register'),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ],
