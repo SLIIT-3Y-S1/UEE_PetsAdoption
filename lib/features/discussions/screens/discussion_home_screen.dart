@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pawpal/core/constants/colors.dart';
-import 'package:pawpal/features/discussions/newdiscussion.dart';
+import 'newdiscussion.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'view_discussion.dart';
+import '../models/discussion.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // Import the Bloc package
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart'; // Import your User Bloc
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart'; // Import states
 
 class DiscussionsHomeScreen extends StatefulWidget {
   const DiscussionsHomeScreen({super.key});
@@ -13,93 +19,74 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
-
-  // Sample data for both tabs
-  final List<Map<String, dynamic>> discussions = [];
-  final List<Map<String, dynamic>> myDiscussions = [];
-  List<Map<String, dynamic>> filteredDiscussions = [];
-  List<Map<String, dynamic>> filteredMyDiscussions = [];
-
+  List<DiscussionModel> discussions = [];
+  List<DiscussionModel> filteredDiscussions = [];
+  List<DiscussionModel> myDiscussions = []; // List for my discussions
   String _selectedFilter = 'Most Recent'; // Default filter
+  String? userEmail; // Variable to store user email
+
+  // Add a list to track liked discussions
+  List<bool> likedDiscussions = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
-    // Sample discussions data
-    discussions.addAll([
-      {
-        'title': 'Best Tricks To Teach A Dog',
-        'description': 'What are some of your favorite tricks to teach a dog?',
-        'likes': 15500,
-        'comments': 568,
-        'views': 30200,
-        'isFavorite': true,
-      },
-      {
-        'title': 'How to Train a Cat',
-        'description': 'Cats are independent, but they can be trained too...',
-        'likes': 15000,
-        'comments': 500,
-        'views': 27000,
-        'isFavorite': false,
-      },
-    ]);
-
-    // Sample my discussions data
-    myDiscussions.addAll([
-      {
-        'title': 'My Tips for Pet Training',
-        'description': 'I have trained multiple dogs, and here are my tips...',
-        'likes': 12000,
-        'comments': 400,
-        'views': 24000,
-        'isFavorite': true,
-      },
-      {
-        'title': 'Feeding Habits for Pets',
-        'description': 'Here are some tips for feeding your pets...',
-        'likes': 10000,
-        'comments': 200,
-        'views': 15000,
-        'isFavorite': false,
-      },
-    ]);
-
-    // Initially, filtered lists are the same as the original lists
-    filteredDiscussions = List.from(discussions);
-    filteredMyDiscussions = List.from(myDiscussions);
-
     _searchController.addListener(_onSearchChanged);
+    getAllDiscussions();
+    _retrieveUserEmail(); // Retrieve user email
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    _searchController.dispose();
-    super.dispose();
+  Future<void> getAllDiscussions() async {
+    try {
+      final QuerySnapshot discussionsSnapshot = await FirebaseFirestore.instance
+          .collection('discussions')
+          .orderBy('timestamp',
+              descending: true) // Order by createdAt field in descending order
+          .get();
+
+      setState(() {
+        discussions = discussionsSnapshot.docs.map((doc) {
+          return DiscussionModel.fromMap(doc.data() as Map<String, dynamic>);
+        }).toList();
+        filteredDiscussions = List.from(discussions);
+        likedDiscussions =
+            List.filled(discussions.length, false); // Initialize liked status
+        filterMyDiscussions(); // Filter My Discussions after fetching
+      });
+    } catch (e) {
+      print('Error fetching discussions: $e');
+    }
   }
 
-  // Method to handle changes in the search bar
+  void _retrieveUserEmail() {
+    final userState = context.read<UserAuthBloc>().state;
+    if (userState is UserAuthSuccess) {
+      userEmail = userState.user.email;
+    }
+  }
+
+  void filterMyDiscussions() {
+    if (userEmail != null) {
+      setState(() {
+        myDiscussions = discussions
+            .where((discussion) => discussion.email == userEmail)
+            .toList();
+      });
+    }
+  }
+
   void _onSearchChanged() {
     final query = _searchController.text.toLowerCase();
     setState(() {
       filteredDiscussions = discussions
           .where((discussion) =>
-              discussion['title'].toLowerCase().contains(query) ||
-              discussion['description'].toLowerCase().contains(query))
-          .toList();
-
-      filteredMyDiscussions = myDiscussions
-          .where((discussion) =>
-              discussion['title'].toLowerCase().contains(query) ||
-              discussion['description'].toLowerCase().contains(query))
+              discussion.title.toLowerCase().contains(query) ||
+              discussion.description.toLowerCase().contains(query))
           .toList();
     });
   }
 
-  // Method to show filter bottom sheet
   void _showFilterBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -158,6 +145,37 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen>
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // Function to calculate time ago
+  String timeAgo(DateTime timestamp) {
+    final Duration difference = DateTime.now().difference(timestamp);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago';
+    } else {
+      return 'Just now';
+    }
+  }
+
+  // Function to handle like button tap
+  void _handleLikeButton(int index) {
+    setState(() {
+      likedDiscussions[index] = !likedDiscussions[index]; // Toggle like status
+      discussions[index].noOfLikes =
+          likedDiscussions[index] ? 1 : 0; // Update like count
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
@@ -205,33 +223,32 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen>
               controller: _tabController,
               children: [
                 _buildDiscussionsList(filteredDiscussions),
-                _buildDiscussionsList(filteredMyDiscussions),
+                _buildDiscussionsList(myDiscussions), // My Discussions
               ],
             ),
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 50.0),
-        child: FloatingActionButton(
-          backgroundColor: AppColors.secondary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.0),
-          ),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const NewDiscussionPage()));
-          },
-          child: const Icon(Icons.add),
-        ),
-      ),
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(bottom: 50.0),
+      //   child: FloatingActionButton(
+      //     backgroundColor: AppColors.secondary,
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(50.0),
+      //     ),
+      //     onPressed: () {
+      //       Navigator.push(
+      //           context,
+      //           MaterialPageRoute(
+      //               builder: (context) => const NewDiscussionPage()));
+      //     },
+      //     child: const Icon(Icons.add),
+      //   ),
+      // ),
     );
   }
 
-  // Method to build the discussions list
-  Widget _buildDiscussionsList(List<Map<String, dynamic>> data) {
+  Widget _buildDiscussionsList(List<DiscussionModel> data) {
     if (data.isEmpty) {
       return const Center(
         child: Text('No discussions found'),
@@ -241,76 +258,91 @@ class _DiscussionsHomeScreenState extends State<DiscussionsHomeScreen>
       itemCount: data.length,
       itemBuilder: (context, index) {
         final discussion = data[index];
-        return Card(
-          elevation: 2.0,
-          margin: const EdgeInsets.all(8.0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title of the discussion
-                Text(
-                  discussion['title'],
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                // Description of the discussion
-                Text(
-                  discussion['description'],
-                  style: const TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // Like, Comment, and Favorite Buttons Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Likes and comments section
-                    Row(
-                      children: [
-                        // Like button and count
-                        IconButton(
-                          icon: const Icon(Icons.favorite_border),
-                          onPressed: () {
-                            // Handle like button tap
-                          },
-                        ),
-                        Text('${discussion['likes']}'),
-                        const SizedBox(width: 16),
-                        // Comment button and count
-                        IconButton(
-                          icon: const Icon(Icons.comment),
-                          onPressed: () {
-                            // Handle comment button tap
-                          },
-                        ),
-                        Text('${discussion['comments']}'),
-                      ],
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ViewDiscussionPage(discussion: discussion),
+              ),
+            );
+            getAllDiscussions(); // Refresh when back
+          },
+          child: Card(
+            elevation: 2.0,
+            margin: const EdgeInsets.all(8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    discussion.title,
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    // Favorite button on the right side
-                    IconButton(
-                      icon: Icon(
-                        discussion['isFavorite']
-                            ? Icons.star
-                            : Icons.star_border,
-                        color: discussion['isFavorite'] ? Colors.yellow : null,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    discussion.description,
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Display time ago in the bottom right corner
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      timeAgo(discussion
+                          .timestamp), // Ensure this returns a DateTime object
+                      style: const TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
                       ),
-                      onPressed: () {
-                        // Handle favorite button tap
-                      },
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              likedDiscussions[index]
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: likedDiscussions[index]
+                                  ? Colors.red // Change color if liked
+                                  : null,
+                            ),
+                            onPressed: () =>
+                                _handleLikeButton(index), // Handle like
+                          ),
+                          Text(
+                            '${discussion.noOfLikes}', // Show like count
+                            style: const TextStyle(fontSize: 14.0),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.comment),
+                            onPressed: () {
+                              // Handle comment button tap
+                            },
+                          ),
+                          Text('${discussion.noOfComments}'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

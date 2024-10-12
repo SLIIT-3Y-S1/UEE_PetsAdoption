@@ -31,3 +31,7 @@ class UserRegisterFailure extends UserAuthState {
   final String error;
   UserRegisterFailure(this.error);
 }
+
+
+// logout -------------
+class UserLogoutSuccess extends UserAuthState {}

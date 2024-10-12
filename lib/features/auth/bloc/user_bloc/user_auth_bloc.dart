@@ -65,5 +65,15 @@ class UserAuthBloc extends Bloc<UserAuthEvent, UserAuthState> {
         emit(UserRegisterFailure('Registration failed: $e'));
       }
     });
+    //logout request handler
+    on<UserAuthLogoutRequested>((event, emit) async {
+      emit(UserAuthLoading());
+      try {
+        await _authService.signOut();
+        emit(UserLogoutSuccess());
+      } catch (e) {
+        emit(UserAuthFailure('Logout failed: $e'));
+      }
+    });
   }
 }

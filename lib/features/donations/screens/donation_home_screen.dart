@@ -186,22 +186,22 @@ class _DonationHomeScreenState extends State<DonationHomeScreen>
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 50.0),
-        child: FloatingActionButton(
-          backgroundColor: AppColors.secondary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.0),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => DonationFormScreen()),
-            );
-          },
-          child: Icon(Icons.add),
-        ),
-      ),
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(bottom: 50.0),
+      //   child: FloatingActionButton(
+      //     backgroundColor: AppColors.secondary,
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(50.0),
+      //     ),
+      //     onPressed: () {
+      //       Navigator.push(
+      //         context,
+      //         MaterialPageRoute(builder: (context) => DonationFormScreen()),
+      //       );
+      //     },
+      //     child: Icon(Icons.add),
+      //   ),
+      // ),
     );
   }
 }

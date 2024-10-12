@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart';
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_event.dart';
 import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart';
+import 'package:pawpal/features/common/screens/splash_screen.dart';
 import 'package:pawpal/features/donations/widgets/donation_requests_list_widget.dart';
 import 'package:pawpal/features/donations/widgets/open_donation_list_widget.dart';
 import 'package:pawpal/features/common/widgets/profile_appbar.dart';
@@ -55,20 +57,28 @@ class ProfileScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                       Text(
-                        'Professional Veterinarian and dog lover',
+                        'Veterinarian and dog lover',
                         style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                     ],
                   ),
-                  Spacer(),
+                  // Spacer(),
                   // Share and Edit Profile buttons
+                  // IconButton(
+                  //   icon: Icon(Icons.share),
+                  //   onPressed: () {},
+                  // ),
+                  // logout button
                   IconButton(
-                    icon: Icon(Icons.share),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {},
+                    icon: Icon(Icons.logout),
+                    onPressed: () {
+                      BlocProvider.of<UserAuthBloc>(context)
+                          .add((UserAuthLogoutRequested()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SplashScreen()));
+                    },
                   ),
                 ],
               ),

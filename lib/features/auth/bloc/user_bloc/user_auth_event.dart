@@ -26,3 +26,7 @@ class UserAuthRegisterRequested extends UserAuthEvent {
 }
 
 class UserAuthLogoutRequested extends UserAuthEvent {}
+
+//logout ---------
+class UserAuthLogout extends UserAuthEvent {}
+

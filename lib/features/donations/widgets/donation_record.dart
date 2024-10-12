@@ -73,23 +73,32 @@ class DonationRecord extends StatelessWidget {
                                       SizedBox(height: 16),
 
                                       // Poster information and clickable user profile
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              // Handle user profile click
-                                              print('User profile clicked');
-                                            },
-                                            child: Text(
-                                              'Posted: @${data['user'] ?? 'Unknown'}',
-                                              style: TextStyle(
-                                                color: Colors.blue,
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.lightBlue[50],
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                // Handle user profile click
+                                                print('User profile clicked');
+                                              },
+                                              child: Text(
+                                                'Posted: @${data['user'] ?? 'Unknown'}',
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                       SizedBox(height: 10),
 
@@ -127,46 +136,74 @@ class DonationRecord extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          _buildDetailItem(
+                                          _buildDetailBox(
                                               label: 'Date',
                                               value: _formatTimestamp(
                                                   data['timestamp'])),
-                                          _buildDetailItem(
+                                          _buildDetailBox(
                                               label: 'Category',
                                               value: data['category'] ??
                                                   'No category available'),
                                         ],
                                       ),
-                                      SizedBox(height: 8),
+                                      SizedBox(height: 12),
 
                                       // Location
-                                      Row(
-                                        children: [
-                                          Icon(Icons.location_on,
-                                              color: Colors.blue),
-                                          Text(
-                                            data['location'] ??
-                                                'No location available',
-                                            style: TextStyle(
-                                              color: Colors.blue,
-                                              fontSize: 18, // Bigger font size
-                                              fontWeight:
-                                                  FontWeight.bold, // Bold font
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.lightBlue[50],
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.location_on,
+                                                color: Colors.blue),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              data['location'] ??
+                                                  'No location available',
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize:
+                                                    18, // Bigger font size
+                                                fontWeight: FontWeight
+                                                    .bold, // Bold font
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                       SizedBox(height: 16),
 
                                       // About section
-                                      Text('About',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold)),
-                                      Text(
-                                        data['description'] ??
-                                            'No description available',
-                                        style: TextStyle(fontSize: 16),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                // Handle user profile click
+                                                print('User profile clicked');
+                                              },
+                                              child: Text(
+                                                '${data['description'] ?? 'Unknown'}',
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
 
                                       SizedBox(height: 16),
@@ -426,6 +463,28 @@ class DonationRecord extends StatelessWidget {
         ),
         Text(value),
       ],
+    );
+  }
+
+  // Build detail box widget
+  Widget _buildDetailBox({required String label, required String value}) {
+    return Container(
+      padding: EdgeInsets.all(15),
+      margin: EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // Light gray background color
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Text(value),
+        ],
+      ),
     );
   }
 

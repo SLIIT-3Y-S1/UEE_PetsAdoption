@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pawpal/core/assets/app_vectors.dart';
+import 'package:pawpal/features/discussions/newdiscussion.dart';
+import 'package:pawpal/features/donations/screens/donation_form_screen.dart';
 import 'package:pawpal/theme/theme.dart';
 
 class PostDrawer extends StatelessWidget {
@@ -44,10 +46,16 @@ class PostDrawer extends StatelessWidget {
               // Handle New Post tap
               break;
             case 1:
-              // Handle New Discuss tap
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const NewDiscussionPage()));
               break;
             case 2:
-              // Handle New Donation tap
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DonationFormScreen()),
+            );
               break;
             case 3:
               // Handle New Request tap

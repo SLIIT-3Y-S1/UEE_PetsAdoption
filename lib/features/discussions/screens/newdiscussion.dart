@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'discussion_home_screen.dart';
+import 'package:pawpal/features/discussions/services/discussion_services.dart';
+import '../models/discussion.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // Import the Bloc package
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_bloc.dart'; // Import your User Bloc
+import 'package:pawpal/features/auth/bloc/user_bloc/user_auth_state.dart'; // Import states
 
 class NewDiscussionPage extends StatefulWidget {
   const NewDiscussionPage({super.key});
@@ -19,6 +24,61 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  // Function to handle submission
+  Future<void> _submitDiscussion() async {
+    if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
+      // Show an error message if fields are empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    // Retrieve email from the UserAuthBloc
+    final userState = context.read<UserAuthBloc>().state;
+    String? userEmail;
+
+    if (userState is UserAuthSuccess) {
+      userEmail = userState.user.email; // Fetch the email from the user state
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User not authenticated')),
+      );
+      return;
+    }
+
+    // Create a DiscussionModel instance with email
+    final discussion = DiscussionModel.createDiscussion(
+      title: _titleController.text,
+      description: _descriptionController.text,
+      email: userEmail, // Pass the email from the authenticated user
+    );
+
+    // Add discussion to Firestore
+    try {
+      await FirestoreService().addDiscussionToFirestore(discussion);
+
+      // Clear the text fields after submission
+      _titleController.clear();
+      _descriptionController.clear();
+      _charCount = 0;
+
+      // Navigate back to the discussions page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DiscussionsHomeScreen()),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Discussion added successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add discussion: $e')),
+      );
+    }
   }
 
   @override
@@ -82,9 +142,7 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
             const SizedBox(height: 16),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  // Handle form submission
-                },
+                onPressed: _submitDiscussion, // Call the submit function
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.amber[600], // Matching button color
                 ),
@@ -97,10 +155,4 @@ class _NewDiscussionPageState extends State<NewDiscussionPage> {
       
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: NewDiscussionPage(),
-  ));
 }
