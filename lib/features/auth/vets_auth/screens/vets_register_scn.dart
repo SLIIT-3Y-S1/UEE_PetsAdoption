@@ -65,12 +65,11 @@ class _VetsRegisterScreenState extends State<VetsRegisterScreen> {
     );
 
     if (pickedDate != null) {
-      setState(() {
-        _licenseIssueDateController.text =
-            DateFormat('yyyy-MM-dd').format(pickedDate);
-      });
-    }
+    setState(() {
+      _licenseIssueDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+    });
   }
+}
 
   void _handleRegistration(BuildContext context) {
     if (_formKey.currentState!.validate()) {
